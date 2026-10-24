@@ -1,4 +1,4 @@
-# WindScope (ws-9x4q)
+# WindScope (da-wind-9k)
 ### UK Wholesale Electricity Day-Ahead Wind Forecast Evaluation Engine
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -210,11 +210,11 @@ python -m pytest tests/
 Prerequisites: Docker and Docker Compose installed.
 ```bash
 # Clone the repository
-git clone https://github.com/<anonymous-repo>/ws-9x4q.git
-cd ws-9x4q
+git clone https://github.com/piyush23-eng/da-wind-9k.git
+cd da-wind-9k
 
 # Build and start all services
-docker-compose up --build
+docker compose up --build
 ```
 - Frontend UI: `http://localhost:3000`
 - Backend API & Interactive Docs: `http://localhost:8000/docs`
