@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import GenerationChart from './components/GenerationChart';
 import EditorialInsightRow from './components/EditorialInsightRow';
+import OverviewExecutiveSummary from './components/OverviewExecutiveSummary';
 import IntervalAuditTable from './components/IntervalAuditTable';
 import CollapsibleMethodology from './components/CollapsibleMethodology';
 import DiurnalProfileModal from './components/DiurnalProfileModal';
@@ -185,34 +186,77 @@ export default function App() {
           />
         </section>
 
-        {/* 4. EDITORIAL INSIGHT ROW */}
+        {/* 2. SUMMARY INSIGHT ROW */}
         <EditorialInsightRow
           metrics={overview?.metrics}
           audit={overview?.audit}
           viewMode={viewMode}
         />
 
-        {/* 5. BELOW-THE-FOLD ANALYTICAL DEPTH */}
-        
-        {/* Settlement Period Audit Ledger with RMSE Summary */}
-        <IntervalAuditTable
-          startDate={startDate}
-          endDate={endDate}
-          cutoffTime={cutoffTime}
-          metrics={overview?.metrics}
-          selectedInterval={selectedInterval}
-          onSelectInterval={(iv) => {
-            setSelectedInterval(iv);
-            window.scrollTo({ top: 120, behavior: 'smooth' });
-          }}
-        />
+        {/* 3. DISTINCT WORKSPACE SPREADS */}
+        {viewMode === 'editorial' ? (
+          /* OVERVIEW TAB: Macro Findings & Commercial Procurement Recommendations */
+          <div className="animate-fadeIn">
+            <OverviewExecutiveSummary
+              metrics={overview?.metrics}
+              onSwitchToAnalysis={() => {
+                setViewMode('analysis');
+                window.scrollTo({ top: 100, behavior: 'smooth' });
+              }}
+              onOpenDiurnal={() => setShowDiurnalModal(true)}
+              onSelectEvent={handleSelectEvent}
+            />
+          </div>
+        ) : (
+          /* ANALYSIS TAB: Quantitative Trading Workstation */
+          <div className="space-y-8 animate-fadeIn">
+            
+            {/* Diurnal Profile Feature Banner */}
+            <div className="mt-6 p-4 bg-white border border-rule rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs shadow-2xs">
+              <div className="flex items-center space-x-3">
+                <span className="p-2 bg-forest/10 text-forest rounded-[3px]">
+                  <svg className="w-4 h-4 text-forest" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                </span>
+                <div>
+                  <div className="font-bold text-ink">48-Settlement-Period Diurnal Bias Profile</div>
+                  <div className="text-muted font-sans text-xs">Examine intra-day hourly bias distribution across morning and evening demand peaks.</div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowDiurnalModal(true)}
+                className="px-3.5 py-1.5 bg-[#245C46] text-white hover:bg-[#1A4333] font-bold transition cursor-pointer rounded-[3px] shadow-xs self-start sm:self-auto shrink-0 flex items-center space-x-1"
+              >
+                <span>View Diurnal Curve</span>
+                <span>→</span>
+              </button>
+            </div>
 
-        {/* Collapsible Methodology Section */}
-        <CollapsibleMethodology
-          isOpenDefault={showMethodology}
-          audit={overview?.audit}
-          cutoffTime={cutoffTime}
-        />
+            {/* Settlement Period Audit Ledger with RMSE Summary */}
+            <IntervalAuditTable
+              startDate={startDate}
+              endDate={endDate}
+              cutoffTime={cutoffTime}
+              metrics={overview?.metrics}
+              selectedInterval={selectedInterval}
+              onSelectInterval={(iv) => {
+                setSelectedInterval(iv);
+                window.scrollTo({ top: 120, behavior: 'smooth' });
+              }}
+            />
+
+            {/* Collapsible Methodology Section */}
+            <CollapsibleMethodology
+              isOpenDefault={showMethodology}
+              audit={overview?.audit}
+              cutoffTime={cutoffTime}
+            />
+
+          </div>
+        )}
 
       </main>
 
