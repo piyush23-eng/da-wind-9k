@@ -5,7 +5,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18.3+-61DAFB.svg)](https://react.dev)
 [![Docker](https://img.shields.io/badge/Docker-Supported-2496ED.svg)](https://www.docker.com)
-[![Tests](https://img.shields.io/badge/Tests-10%2F10%20Passing-success.svg)](https://docs.pytest.org)
+[![Tests](https://img.shields.io/badge/Tests-12%2F12%20Passing-success.svg)](https://docs.pytest.org)
 
 WindScope is a production-minded web application engineered for UK electricity utilities and wholesale energy trading desks. It quantitatively evaluates national day-ahead wind power generation forecasts against actual delivered generation to inform day-ahead power purchasing decisions in the GB wholesale electricity market.
 
@@ -253,7 +253,7 @@ Open `http://localhost:5173` in your browser.
 ### Live Verified URLs
 - **Production Dashboard:** [https://windscope-app.vercel.app](https://windscope-app.vercel.app) *(or verified deployment link)*
 - **Production API Health:** [https://windscope-api.onrender.com/api/health](https://windscope-api.onrender.com/api/health)
-- **Public GitHub Repository:** [https://github.com/baleshwar-pandit/ws-9x4q](https://github.com/baleshwar-pandit/ws-9x4q) *(anonymous repository name)*
+- **Public GitHub Repository:** [https://github.com/piyush23-eng/da-wind-9k](https://github.com/piyush23-eng/da-wind-9k) *(anonymous repository name)*
 
 ---
 
