@@ -251,8 +251,8 @@ Open `http://localhost:5173` in your browser.
 - **API Communication:** Configured via `VITE_API_BASE_URL` in the frontend environment.
 
 ### Live Verified URLs
-- **Production Dashboard:** [https://windscope-app.vercel.app](https://windscope-app.vercel.app) *(or verified deployment link)*
-- **Production API Health:** [https://windscope-api.onrender.com/api/health](https://windscope-api.onrender.com/api/health)
+- **Production Dashboard:** [https://da-wind-9k.vercel.app](https://da-wind-9k.vercel.app)
+- **Production API Health:** [https://da-wind-9k.vercel.app/api/health](https://da-wind-9k.vercel.app/api/health)
 - **Public GitHub Repository:** [https://github.com/piyush23-eng/da-wind-9k](https://github.com/piyush23-eng/da-wind-9k) *(anonymous repository name)*
 
 ---
