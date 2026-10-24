@@ -7,41 +7,40 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        serif: ['"Instrument Serif"', 'Georgia', 'serif'],
         sans: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
         mono: ['"IBM Plex Mono"', 'monospace'],
       },
       colors: {
-        ivory: {
-          DEFAULT: '#F5F4ED',
-          50: '#FCFBF8',
-          100: '#FAF9F5',
-          200: '#F0EFE7',
-          300: '#E6E4D9',
-          border: '#DBD8CA',
-          dark: '#E2DFD2',
+        paper: {
+          DEFAULT: '#F7F6F0',
+          pure: '#FFFFFF',
+          tint: '#EFEFE8',
+        },
+        ink: {
+          DEFAULT: '#202821',
+          light: '#3A443B',
         },
         forest: {
           DEFAULT: '#245C46',
           dark: '#1A4333',
           light: '#2E7559',
-          muted: '#3D8C6E',
+          tint: 'rgba(36, 92, 70, 0.08)',
         },
-        amber: {
-          DEFAULT: '#C69A42',
-          dark: '#A67F30',
-          light: '#D9AF5B',
+        rust: {
+          DEFAULT: '#B96745',
+          dark: '#9E5233',
+          light: '#CF7D5B',
+          tint: 'rgba(185, 103, 69, 0.10)',
         },
-        signal: {
-          DEFAULT: '#D76B42',
-          dark: '#B8532D',
-          light: '#E5855F',
+        muted: {
+          DEFAULT: '#777A70',
+          light: '#9DA096',
+          faint: '#B8BAB2',
         },
-        charcoal: {
-          DEFAULT: '#1C2421',
-          light: '#2E3834',
-          muted: '#5C6460',
-          subtle: '#8A928D',
-          faint: '#B4BCB7',
+        rule: {
+          DEFAULT: '#DFDED5',
+          dark: '#CBC9BF',
         }
       }
     },

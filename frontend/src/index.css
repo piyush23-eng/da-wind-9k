@@ -5,34 +5,32 @@
 :root {
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color-scheme: light;
-  background-color: #F5F4ED;
-  color: #1C2421;
+  background-color: #F7F6F0;
+  color: #202821;
 }
 
-code, pre, .font-mono {
+.font-serif {
+  font-family: 'Instrument Serif', Georgia, serif;
+}
+
+.font-mono {
   font-family: 'IBM Plex Mono', monospace;
 }
 
-/* Warm editorial scrollbars */
+/* Restrained, understated scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F0EFE7;
+  background: #F7F6F0;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #DBD8CA;
-  border-radius: 3px;
+  background: #DFDED5;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B4BCB7;
-}
-
-/* Crisp SVG chart transitions */
-.recharts-line-curve {
-  transition: stroke-width 0.15s ease-out;
+  background: #CBC9BF;
 }
