@@ -18,10 +18,10 @@ export default function EditorialInsightRow({ metrics }) {
   const overPct = matchedCount > 0 ? Math.round((overforecastCount / matchedCount) * 1000) / 10 : 0;
 
   return (
-    <section className="border-t border-b border-divider py-7 my-2 font-sans">
+    <section className="border-t border-b border-rule py-7 my-2 font-sans">
       
       {/* Three Figures Arranged as Editorial Columns Separated by Fine Vertical Rules */}
-      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-divider">
+      <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-rule">
         
         {/* Figure 1: MAE */}
         <div className="py-3 md:py-0 md:pr-8">
@@ -81,7 +81,7 @@ export default function EditorialInsightRow({ metrics }) {
 
       {/* Analytical Takeaway Derived from Calculations */}
       {matchedCount > 0 && (
-        <div className="mt-7 pt-5 border-t border-divider/60 text-sm sm:text-base text-ink font-sans leading-relaxed max-w-4xl">
+        <div className="mt-7 pt-5 border-t border-rule/70 text-sm sm:text-base text-ink font-sans leading-relaxed max-w-4xl">
           <span className="font-mono text-xs text-muted uppercase tracking-wider mr-2">Analytical Finding:</span>
           Across January 2026, day-ahead forecasts overpredicted realised wind generation in{' '}
           <strong className="font-medium text-copper">{overPct}% of all settlement periods</strong> ({overforecastCount.toLocaleString()} intervals), creating a systematic shortfall bias of{' '}

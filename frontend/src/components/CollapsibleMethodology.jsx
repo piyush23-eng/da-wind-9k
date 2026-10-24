@@ -4,7 +4,7 @@ export default function CollapsibleMethodology({ isOpenDefault = false, audit = 
   const [open, setOpen] = useState(isOpenDefault);
 
   return (
-    <section id="methodology" className="py-8 border-b border-divider font-sans">
+    <section id="methodology" className="py-8 border-b border-rule font-sans">
       <div className="flex items-baseline justify-between mb-4">
         <div>
           <h3 className="font-serif text-2xl text-ink font-normal">
@@ -16,14 +16,14 @@ export default function CollapsibleMethodology({ isOpenDefault = false, audit = 
         </div>
         <button
           onClick={() => setOpen(!open)}
-          className="text-xs font-mono text-ink hover:text-forest underline underline-offset-4 decoration-divider hover:decoration-forest cursor-pointer"
+          className="text-xs font-mono text-ink hover:text-forest underline underline-offset-4 decoration-rule hover:decoration-forest cursor-pointer"
         >
           {open ? 'Hide documentation ↑' : 'Read documentation ↓'}
         </button>
       </div>
 
       {open && (
-        <div className="pt-4 space-y-6 text-xs text-ink leading-relaxed max-w-4xl border-t border-divider/60">
+        <div className="pt-4 space-y-6 text-xs text-ink leading-relaxed max-w-4xl border-t border-rule/70">
           
           {/* Note 1 */}
           <div>
@@ -32,8 +32,8 @@ export default function CollapsibleMethodology({ isOpenDefault = false, audit = 
             </h4>
             <p className="text-muted leading-relaxed">
               All data is ingested directly from the official <strong>Elexon Balancing Mechanism Reporting Service (BMRS)</strong> API.
-              Actual generation is extracted from the <code className="font-mono text-ink bg-chalk-subtle px-1 py-0.5">FUELHH</code> stream, filtered strictly to fuel type <code className="font-mono text-forest bg-chalk-subtle px-1 py-0.5">WIND</code>, representing physical national outturn power across Great Britain at 30-minute settlement period resolution.
-              Forecast generation is queried from the <code className="font-mono text-ink bg-chalk-subtle px-1 py-0.5">WINDFOR</code> stream, which publishes National Grid ESO day-ahead and multi-day forward wind predictions.
+              Actual generation is extracted from the <code className="font-mono text-ink bg-paper-tint px-1 py-0.5">FUELHH</code> stream, filtered strictly to fuel type <code className="font-mono text-forest bg-paper-tint px-1 py-0.5">WIND</code>, representing physical national outturn power across Great Britain at 30-minute settlement period resolution.
+              Forecast generation is queried from the <code className="font-mono text-ink bg-paper-tint px-1 py-0.5">WINDFOR</code> stream, which publishes National Grid ESO day-ahead and multi-day forward wind predictions.
             </p>
           </div>
 
@@ -45,7 +45,7 @@ export default function CollapsibleMethodology({ isOpenDefault = false, audit = 
             <p className="text-muted leading-relaxed">
               In UK wholesale power trading, day-ahead purchase decisions are committed on Day <code className="font-mono text-ink">D-1</code> prior to market auction gate closure (e.g. 11:00 UTC for EPEX SPOT or 17:00 UTC standard close). Any forecast issued after the cutoff was physically unavailable to trading desks at decision time.
             </p>
-            <div className="mt-2.5 p-3.5 bg-chalk-pure border border-divider font-mono text-[11px] text-ink space-y-1">
+            <div className="mt-2.5 p-3.5 bg-paper-pure border border-rule font-mono text-[11px] text-ink space-y-1">
               <div>target_interval = Delivery Timestamp (Day D)</div>
               <div>decision_cutoff = (Day D − 1) at {cutoffTime || '17:00:00'} UTC</div>
               <div className="text-forest font-semibold">
@@ -66,7 +66,7 @@ export default function CollapsibleMethodology({ isOpenDefault = false, audit = 
               Both Elexon source datasets report instantaneous power generation in <strong>Megawatts (MW)</strong>. 
               Because UK electricity settlement periods have a duration of 30 minutes (0.5 hour), the energy delivered in <strong>Megawatt-hours (MWh)</strong> is calculated as:
             </p>
-            <div className="mt-2 p-2.5 bg-chalk-pure border border-divider font-mono text-xs text-ink inline-block">
+            <div className="mt-2 p-2.5 bg-paper-pure border border-rule font-mono text-xs text-ink inline-block">
               Delivered Energy (MWh) = Power (MW) × 0.5 hours
             </div>
             <p className="text-muted text-[11px] mt-1.5">

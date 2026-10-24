@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import GenerationChart from './components/GenerationChart';
 import EditorialInsightRow from './components/EditorialInsightRow';
-import ErrorTimelineChart from './components/ErrorTimelineChart';
 import IntervalAuditTable from './components/IntervalAuditTable';
 import CollapsibleMethodology from './components/CollapsibleMethodology';
 import { fetchOverview, fetchGenerationTimeseries } from './services/api';
@@ -18,6 +17,21 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showMethodology, setShowMethodology] = useState(false);
+
+  // Workstation 4.0 States
+  const [viewMode, setViewMode] = useState('editorial'); // 'editorial' | 'analysis'
+  const [selectedInterval, setSelectedInterval] = useState(null);
+
+  // Global ESC listener to dismiss selected interval inspector
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSelectedInterval(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -45,10 +59,12 @@ export default function App() {
   const handleRangeChange = (start, end) => {
     setStartDate(start);
     setEndDate(end);
+    setSelectedInterval(null);
   };
 
   const handleCutoffChange = (newCutoff) => {
     setCutoffTime(newCutoff);
+    setSelectedInterval(null);
   };
 
   const handleOpenMethodology = () => {
@@ -58,10 +74,14 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-chalk text-ink flex flex-col font-sans selection:bg-forest/15 selection:text-forest">
+    <div className="min-h-screen bg-paper text-ink flex flex-col font-sans selection:bg-forest/15 selection:text-forest">
       
       {/* 1. SLIM EDITORIAL NAVIGATION & HEADLINE */}
-      <Header onOpenMethodology={handleOpenMethodology} />
+      <Header
+        viewMode={viewMode}
+        onToggleViewMode={setViewMode}
+        onOpenMethodology={handleOpenMethodology}
+      />
 
       {/* 2. MAIN PUBLICATION SPREAD */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-6">
@@ -91,6 +111,10 @@ export default function App() {
             onRangeChange={handleRangeChange}
             cutoffTime={cutoffTime}
             onCutoffChange={handleCutoffChange}
+            viewMode={viewMode}
+            selectedInterval={selectedInterval}
+            onSelectInterval={setSelectedInterval}
+            onCloseInspector={() => setSelectedInterval(null)}
           />
         </section>
 
@@ -108,6 +132,11 @@ export default function App() {
           endDate={endDate}
           cutoffTime={cutoffTime}
           metrics={overview?.metrics}
+          selectedInterval={selectedInterval}
+          onSelectInterval={(iv) => {
+            setSelectedInterval(iv);
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+          }}
         />
 
         {/* Collapsible Methodology Section */}
@@ -120,7 +149,7 @@ export default function App() {
       </main>
 
       {/* 6. EDITORIAL FOOTER */}
-      <footer className="py-12 border-t border-divider mt-12 bg-chalk text-xs text-muted font-mono">
+      <footer className="py-12 border-t border-rule mt-12 bg-paper text-xs text-muted font-mono">
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-baseline justify-between gap-4">
           <div className="space-y-1">
             <div className="font-bold tracking-widest text-ink">WINDSCOPE / FIELD NOTES ON WIND</div>
@@ -130,7 +159,7 @@ export default function App() {
           </div>
           <div className="flex items-center space-x-4 text-[11px]">
             <span>Elexon BMRS Stream</span>
-            <span className="text-divider">/</span>
+            <span className="text-rule">/</span>
             <span>All times UTC (GMT)</span>
           </div>
         </div>

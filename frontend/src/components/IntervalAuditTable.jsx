@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { fetchIntervals } from '../services/api';
 
-export default function IntervalAuditTable({ startDate, endDate, cutoffTime, metrics }) {
+export default function IntervalAuditTable({
+  startDate,
+  endDate,
+  cutoffTime,
+  metrics,
+  selectedInterval,
+  onSelectInterval
+}) {
   const [data, setData] = useState({ items: [], totalCount: 0, totalPages: 1 });
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [matchedOnly, setMatchedOnly] = useState(false);
+  const [largeErrorsOnly, setLargeErrorsOnly] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('startTime');
   const [sortOrder, setSortOrder] = useState('asc');
   const [loading, setLoading] = useState(false);
@@ -45,6 +54,20 @@ export default function IntervalAuditTable({ startDate, endDate, cutoffTime, met
     setPage(1);
   };
 
+  // Client-side filtering for search & large errors
+  const filteredItems = (data.items || []).filter((iv) => {
+    if (largeErrorsOnly && (iv.absoluteError === null || iv.absoluteError < 2000)) {
+      return false;
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const st = (iv.startTime || '').toLowerCase();
+      const sp = String(iv.settlementPeriod);
+      return st.includes(q) || sp.includes(q);
+    }
+    return true;
+  });
+
   const exportCSV = () => {
     if (!data.items || !data.items.length) return;
     const headers = [
@@ -58,7 +81,7 @@ export default function IntervalAuditTable({ startDate, endDate, cutoffTime, met
       'Absolute Error (MW)',
       'Status'
     ];
-    const rows = data.items.map(iv => [
+    const rows = data.items.map((iv) => [
       iv.startTime,
       iv.deliveryDate,
       iv.settlementPeriod,
@@ -70,8 +93,9 @@ export default function IntervalAuditTable({ startDate, endDate, cutoffTime, met
       iv.isMatched ? 'Matched' : (iv.missingReason || 'Unmatched')
     ]);
 
-    const csvContent = 'data:text/csv;charset=utf-8,' +
-      [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      [headers.join(','), ...rows.map((e) => e.join(','))].join('\n');
 
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
@@ -83,66 +107,68 @@ export default function IntervalAuditTable({ startDate, endDate, cutoffTime, met
   };
 
   return (
-    <div className="py-8 border-b border-divider font-sans">
+    <div className="py-8 border-b border-rule font-sans">
       
-      {/* Detailed Statistical Summary Strip */}
+      {/* 1. Contextual Statistical Header */}
       {metrics && (
-        <div className="mb-6 pb-6 border-b border-divider/60 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+        <div className="mb-6 pb-6 border-b border-rule/60 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
           <div>
-            <span className="text-muted text-[11px] font-sans">Root Mean Squared Error (RMSE):</span>
+            <span className="text-muted text-[11px] font-sans">RMSE Volatility Penalty:</span>
             <div className="font-bold text-ink text-base mt-0.5">
               {Math.round(metrics.rmse || 0).toLocaleString()} MW
             </div>
             <div className="text-[10px] text-muted font-sans mt-0.5">
-              +{(metrics.rmse - metrics.mae).toFixed(1)} MW volatility penalty
+              +{(metrics.rmse - metrics.mae).toFixed(1)} MW above MAE
             </div>
           </div>
 
           <div>
-            <span className="text-muted text-[11px] font-sans">Peak Overforecast Event:</span>
+            <span className="text-muted text-[11px] font-sans">Peak Overforecast Shortfall:</span>
             <div className="font-bold text-copper text-base mt-0.5">
               +{Math.round(metrics.maxOverforecast || 0).toLocaleString()} MW
             </div>
             <div className="text-[10px] text-muted font-sans mt-0.5">
-              Acute shortfall exposure
+              Acute market exposure
             </div>
           </div>
 
           <div>
-            <span className="text-muted text-[11px] font-sans">Peak Underforecast Event:</span>
+            <span className="text-muted text-[11px] font-sans">Peak Underforecast Ramp:</span>
             <div className="font-bold text-forest text-base mt-0.5">
               {Math.round(metrics.maxUnderforecast || 0).toLocaleString()} MW
             </div>
             <div className="text-[10px] text-muted font-sans mt-0.5">
-              Rapid atmospheric ramp
+              Rapid weather front arrival
             </div>
           </div>
 
           <div>
             <span className="text-muted text-[11px] font-sans">Over / Under Ratio:</span>
             <div className="font-bold text-ink text-base mt-0.5">
-              <span className="text-copper">{metrics.overforecastCount}</span> /{' '}
-              <span className="text-forest">{metrics.underforecastCount}</span>
+              <span className="text-copper font-bold">{metrics.overforecastCount}</span> /{' '}
+              <span className="text-forest font-bold">{metrics.underforecastCount}</span>
             </div>
             <div className="text-[10px] text-muted font-sans mt-0.5">
-              Interval frequency count
+              Matched interval counts
             </div>
           </div>
         </div>
       )}
 
-      {/* Audit Table Header & Controls */}
+      {/* 2. Audit Table Controls Bar */}
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between pb-3 gap-3">
         <div>
           <h3 className="font-sans font-medium text-ink text-sm">
             Settlement Period Audit Ledger
           </h3>
           <p className="text-muted text-xs font-sans mt-0.5">
-            Half-hourly verification records matching physical outturns to day-ahead bids. Click column headers to sort.
+            Click any row to inspect its exact forecast vintage and cutoff details on the chart above.
           </p>
         </div>
 
-        <div className="flex items-center space-x-4 text-xs font-mono text-muted">
+        <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-muted">
+          
+          {/* Quick Filter: Matched Only */}
           <label className="flex items-center space-x-1.5 cursor-pointer hover:text-ink">
             <input
               type="checkbox"
@@ -151,26 +177,49 @@ export default function IntervalAuditTable({ startDate, endDate, cutoffTime, met
                 setMatchedOnly(e.target.checked);
                 setPage(1);
               }}
-              className="rounded-none border-divider text-forest focus:ring-0"
+              className="rounded-none border-rule text-forest focus:ring-0 cursor-pointer"
             />
             <span>Matched only</span>
           </label>
 
-          <span className="text-divider">|</span>
+          {/* Quick Filter: Large Errors (>2000 MW) */}
+          <label className="flex items-center space-x-1.5 cursor-pointer hover:text-ink">
+            <input
+              type="checkbox"
+              checked={largeErrorsOnly}
+              onChange={(e) => setLargeErrorsOnly(e.target.checked)}
+              className="rounded-none border-rule text-copper focus:ring-0 cursor-pointer"
+            />
+            <span>Large errors (&gt;2k MW)</span>
+          </label>
 
+          <span className="text-rule">|</span>
+
+          {/* Search Box */}
+          <input
+            type="text"
+            placeholder="Search date or SP..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border-b border-rule bg-transparent px-1 py-0.5 text-xs font-mono text-ink placeholder:text-muted/60 focus:outline-none focus:border-ink w-32 sm:w-36"
+          />
+
+          <span className="text-rule">|</span>
+
+          {/* CSV Export */}
           <button
             onClick={exportCSV}
-            className="text-ink hover:text-forest transition underline underline-offset-4 decoration-divider hover:decoration-forest cursor-pointer"
+            className="text-ink hover:text-forest transition underline underline-offset-4 decoration-rule hover:decoration-forest cursor-pointer"
           >
             Export Raw CSV
           </button>
         </div>
       </div>
 
-      {/* Editorial Table */}
+      {/* 3. The Ledger Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs font-mono border-t border-b border-divider">
-          <thead className="text-muted uppercase text-[10px] tracking-wider border-b border-divider">
+        <table className="w-full text-left text-xs font-mono border-t border-b border-rule">
+          <thead className="text-muted uppercase text-[10px] tracking-wider border-b border-rule">
             <tr>
               <th
                 onClick={() => handleSort('startTime')}
@@ -189,7 +238,7 @@ export default function IntervalAuditTable({ startDate, endDate, cutoffTime, met
                 onClick={() => handleSort('forecastGeneration')}
                 className="py-2.5 px-3 text-right font-medium cursor-pointer hover:text-ink transition"
               >
-                Forecast (MW) {sortBy === 'forecastGeneration' && (sortOrder === 'asc' ? '↑' : '↓')}
+                DA Forecast (MW) {sortBy === 'forecastGeneration' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
               <th className="py-2.5 px-3 font-medium">Published (D-1)</th>
               <th
@@ -201,19 +250,29 @@ export default function IntervalAuditTable({ startDate, endDate, cutoffTime, met
               <th className="py-2.5 pl-3 text-center font-medium">Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-divider/60 text-ink">
+          <tbody className="divide-y divide-rule/60 text-ink">
             {loading ? (
               <tr>
                 <td colSpan="7" className="py-8 text-center text-muted font-sans text-xs">
                   Loading ledger rows...
                 </td>
               </tr>
-            ) : data.items && data.items.length > 0 ? (
-              data.items.map((iv) => {
+            ) : filteredItems.length > 0 ? (
+              filteredItems.map((iv) => {
                 const isOver = iv.error > 0;
                 const isUnder = iv.error < 0;
+                const isSelected = selectedInterval?.startTime === iv.startTime;
+
                 return (
-                  <tr key={iv.startTime} className="hover:bg-chalk-subtle/50 transition-colors">
+                  <tr
+                    key={iv.startTime}
+                    onClick={() => onSelectInterval && onSelectInterval(iv)}
+                    className={`cursor-pointer transition-colors ${
+                      isSelected
+                        ? 'bg-paper-tint font-semibold border-l-2 border-l-forest'
+                        : 'hover:bg-paper-tint/40'
+                    }`}
+                  >
                     <td className="py-2 pr-4 font-mono text-muted">
                       {iv.startTime.replace('T', ' ').replace('Z', '')}
                     </td>
@@ -259,7 +318,7 @@ export default function IntervalAuditTable({ startDate, endDate, cutoffTime, met
         </table>
       </div>
 
-      {/* Pagination Controls */}
+      {/* 4. Pagination */}
       <div className="flex items-baseline justify-between text-xs text-muted font-mono pt-3">
         <span>
           Page {page} of {data.totalPages} ({data.totalCount} total settlement periods)
@@ -272,7 +331,7 @@ export default function IntervalAuditTable({ startDate, endDate, cutoffTime, met
           >
             ← Previous
           </button>
-          <span className="text-divider">/</span>
+          <span className="text-rule">/</span>
           <button
             onClick={() => setPage(Math.min(data.totalPages, page + 1))}
             disabled={page >= data.totalPages || loading}

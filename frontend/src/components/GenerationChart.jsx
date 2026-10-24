@@ -13,9 +13,9 @@ import {
 } from 'recharts';
 
 /**
- * High-precision research tooltip showing aligned numerical values.
+ * Aligned numerical research tooltip.
  */
-const InstrumentTooltip = ({ active, payload }) => {
+const InstrumentTooltip = ({ active, payload, viewMode = 'editorial' }) => {
   if (!active || !payload || !payload.length) return null;
 
   const point = payload[0]?.payload;
@@ -39,71 +39,112 @@ const InstrumentTooltip = ({ active, payload }) => {
 
   const isOver = error !== null && error > 0;
   const isUnder = error !== null && error < 0;
+  const isDark = viewMode === 'analysis';
 
   return (
-    <div className="bg-[#FAF9F5] border border-divider p-4 shadow-sm text-xs font-sans max-w-xs transition-opacity duration-75">
+    <div
+      className={`p-4 border shadow-md text-xs font-sans max-w-xs transition-opacity duration-75 ${
+        isDark
+          ? 'bg-[#142D25] border-[#2A5244] text-[#F6F5EF]'
+          : 'bg-[#FAF9F5] border-rule text-ink'
+      }`}
+    >
       {/* Header */}
-      <div className="flex items-baseline justify-between pb-2 mb-2.5 border-b border-divider font-mono">
-        <span className="font-semibold text-ink text-[11px]">
-          {formattedDate}
-        </span>
-        <span className="text-muted text-[11px]">
-          SP {settlementPeriod}
-        </span>
+      <div
+        className={`flex items-baseline justify-between pb-2 mb-2.5 border-b font-mono ${
+          isDark ? 'border-[#2A5244]' : 'border-rule'
+        }`}
+      >
+        <span className="font-semibold text-[11px]">{formattedDate}</span>
+        <span className={isDark ? 'text-sage' : 'text-muted'}>SP {settlementPeriod}</span>
       </div>
 
-      {/* Series Values */}
+      {/* Numerical Data */}
       <div className="space-y-1.5 font-mono">
         <div className="flex items-center justify-between">
-          <span className="text-muted flex items-center font-sans text-xs">
-            <span className="h-1.5 w-3 bg-forest mr-2 inline-block" />
+          <span className={`flex items-center font-sans text-xs ${isDark ? 'text-sage' : 'text-muted'}`}>
+            <span
+              className={`h-1.5 w-3 mr-2 inline-block ${
+                isDark ? 'bg-forest-bright' : 'bg-forest'
+              }`}
+            />
             Actual Wind:
           </span>
-          <span className="font-semibold text-forest">
+          <span
+            className={`font-semibold ${
+              isDark ? 'text-forest-bright' : 'text-forest'
+            }`}
+          >
             {actualGeneration !== null ? `${actualGeneration.toLocaleString()} MW` : 'Missing'}
           </span>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-muted flex items-center font-sans text-xs">
-            <span className="h-1.5 w-3 bg-copper mr-2 inline-block" />
+          <span className={`flex items-center font-sans text-xs ${isDark ? 'text-sage' : 'text-muted'}`}>
+            <span
+              className={`h-1.5 w-3 mr-2 inline-block ${
+                isDark ? 'bg-copper-bright' : 'bg-copper'
+              }`}
+            />
             DA Forecast:
           </span>
-          <span className="font-semibold text-copper">
+          <span
+            className={`font-semibold ${
+              isDark ? 'text-copper-bright' : 'text-copper'
+            }`}
+          >
             {forecastGeneration !== null ? `${forecastGeneration.toLocaleString()} MW` : 'Unscheduled'}
           </span>
         </div>
 
         {forecastPublishTime && (
-          <div className="text-[10px] text-muted/70 pl-5 font-mono">
+          <div className={`text-[10px] pl-5 font-mono ${isDark ? 'text-sage/70' : 'text-muted/70'}`}>
             Issued: {forecastPublishTime.replace('T', ' ').replace('Z', '')}
           </div>
         )}
 
         {isMatched && error !== null ? (
-          <div className="mt-2.5 pt-2 border-t border-divider space-y-1">
+          <div
+            className={`mt-2.5 pt-2 border-t space-y-1 ${
+              isDark ? 'border-[#2A5244]' : 'border-rule'
+            }`}
+          >
             <div className="flex items-center justify-between">
-              <span className="text-muted font-sans text-xs">Signed Error:</span>
-              <span className={`font-bold ${isOver ? 'text-copper' : isUnder ? 'text-forest' : 'text-ink'}`}>
+              <span className={`font-sans text-xs ${isDark ? 'text-sage' : 'text-muted'}`}>
+                Signed Error:
+              </span>
+              <span
+                className={`font-bold ${
+                  isOver
+                    ? isDark ? 'text-copper-bright' : 'text-copper'
+                    : isUnder
+                    ? isDark ? 'text-forest-bright' : 'text-forest'
+                    : 'text-ink'
+                }`}
+              >
                 {error > 0 ? `+${error.toLocaleString()}` : error.toLocaleString()} MW
               </span>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-muted font-sans">
-              <span>Risk Classification:</span>
-              <span className="font-mono text-ink">
-                {isOver ? 'Overforecast (Shortfall)' : isUnder ? 'Underforecast (Spill)' : 'Exact match'}
+            <div className={`flex items-center justify-between text-[11px] font-sans ${isDark ? 'text-sage' : 'text-muted'}`}>
+              <span>Classification:</span>
+              <span className="font-mono">
+                {isOver ? 'Overforecast (Shortfall)' : isUnder ? 'Underforecast (Spill)' : 'Exact'}
               </span>
             </div>
-            <div className="flex items-center justify-between text-[11px] text-muted font-sans">
+            <div className={`flex items-center justify-between text-[11px] font-sans ${isDark ? 'text-sage' : 'text-muted'}`}>
               <span>Absolute Error:</span>
-              <span className="font-mono text-ink">
+              <span className="font-mono">
                 {absoluteError?.toLocaleString()} MW
               </span>
             </div>
           </div>
         ) : (
-          <div className="mt-2 pt-2 border-t border-divider text-[11px] text-copper font-sans">
-            Observation Status: {missingReason || 'Unmatched'}
+          <div
+            className={`mt-2 pt-2 border-t text-[11px] font-sans ${
+              isDark ? 'border-[#2A5244] text-copper-bright' : 'border-rule text-copper'
+            }`}
+          >
+            Status: {missingReason || 'Unmatched'}
           </div>
         )}
       </div>
@@ -118,24 +159,30 @@ export default function GenerationChart({
   endDate,
   onRangeChange,
   cutoffTime,
-  onCutoffChange
+  onCutoffChange,
+  viewMode = 'editorial',
+  selectedInterval = null,
+  onSelectInterval,
+  onCloseInspector
 }) {
   const [showActual, setShowActual] = useState(true);
   const [showForecast, setShowForecast] = useState(true);
   const [showShading, setShowShading] = useState(true);
   const [showErrorStrip, setShowErrorStrip] = useState(true);
 
-  // Time-slice selectors
+  const isDark = viewMode === 'analysis';
+
+  // Date horizon options
   const timeSlices = [
     { label: 'All of January', start: '2026-01-01', end: '2026-01-31' },
-    { label: 'Week 1 (1–7)', start: '2026-01-01', end: '2026-01-07' },
-    { label: 'Week 2 (8–14)', start: '2026-01-08', end: '2026-01-14' },
-    { label: 'Week 3 (15–21)', start: '2026-01-15', end: '2026-01-21' },
-    { label: 'Week 4 (22–28)', start: '2026-01-22', end: '2026-01-28' },
-    { label: 'Late Jan (25–31)', start: '2026-01-25', end: '2026-01-31' },
+    { label: 'Week 1', start: '2026-01-01', end: '2026-01-07' },
+    { label: 'Week 2', start: '2026-01-08', end: '2026-01-14' },
+    { label: 'Week 3', start: '2026-01-15', end: '2026-01-21' },
+    { label: 'Week 4', start: '2026-01-22', end: '2026-01-28' },
+    { label: 'Late Jan', start: '2026-01-25', end: '2026-01-31' },
   ];
 
-  // Process data for the dual-tint difference area and linked error strip
+  // Process data for dual-tint difference area
   const processedData = useMemo(() => {
     if (!data || !data.length) return [];
     return data.map((item) => {
@@ -161,61 +208,31 @@ export default function GenerationChart({
     });
   }, [data]);
 
+  const handleChartClick = (e) => {
+    if (e && e.activePayload && e.activePayload.length && onSelectInterval) {
+      onSelectInterval(e.activePayload[0].payload);
+    }
+  };
+
   return (
-    <div className="py-4">
+    <div
+      className={`py-4 transition-colors duration-200 ${
+        isDark ? 'bg-forest-deep text-paper p-5 -mx-6 px-6 sm:px-10 border-b border-[#2A5244]' : ''
+      }`}
+    >
       
-      {/* 1. Meaningful Understated Controls Bar */}
-      <div className="flex flex-col md:flex-row md:items-baseline justify-between pb-3 border-b border-divider gap-4 text-xs font-mono">
+      {/* 1. Compact Single-Row Controls Bar */}
+      <div
+        className={`flex flex-col lg:flex-row lg:items-center justify-between pb-3.5 mb-3 border-b gap-3 text-xs font-mono ${
+          isDark ? 'border-[#2A5244]' : 'border-rule'
+        }`}
+      >
         
-        {/* Typographic Series Legends & Toggles */}
-        <div className="flex flex-wrap items-center gap-6 text-ink">
-          
-          <button
-            onClick={() => setShowActual(!showActual)}
-            className={`flex items-center space-x-2 transition cursor-pointer ${
-              showActual ? 'text-forest font-semibold' : 'text-muted/50'
-            }`}
-          >
-            <span className="h-0.5 w-4 bg-forest inline-block" />
-            <span>Actual Generation (MW)</span>
-          </button>
-
-          <button
-            onClick={() => setShowForecast(!showForecast)}
-            className={`flex items-center space-x-2 transition cursor-pointer ${
-              showForecast ? 'text-copper font-semibold' : 'text-muted/50'
-            }`}
-          >
-            <span className="h-0.5 w-4 border-b border-dashed border-copper inline-block" />
-            <span>Day-Ahead Forecast (MW)</span>
-          </button>
-
-          <button
-            onClick={() => setShowShading(!showShading)}
-            className={`flex items-center space-x-1.5 transition cursor-pointer ${
-              showShading ? 'text-ink font-medium' : 'text-muted/50'
-            }`}
-          >
-            <span className="h-2 w-2.5 bg-copper/20 border border-copper/40 inline-block mr-0.5" />
-            <span className="h-2 w-2.5 bg-forest/20 border border-forest/40 inline-block mr-1" />
-            <span>Difference Tints</span>
-          </button>
-
-          <button
-            onClick={() => setShowErrorStrip(!showErrorStrip)}
-            className={`transition cursor-pointer ${
-              showErrorStrip ? 'text-ink font-medium' : 'text-muted/50'
-            }`}
-          >
-            <span>Linked Error Strip</span>
-          </button>
-
-        </div>
-
-        {/* Date Horizon Switcher & Cutoff Gate */}
-        <div className="flex flex-wrap items-center gap-4 text-xs text-muted">
-          
-          {/* Horizon Links */}
+        {/* Horizon Links */}
+        <div className="flex flex-wrap items-center gap-3">
+          <span className={`text-[11px] font-sans ${isDark ? 'text-sage' : 'text-muted'}`}>
+            Horizon:
+          </span>
           <div className="flex items-center space-x-2">
             {timeSlices.map((slice, idx) => {
               const active = startDate === slice.start && endDate === slice.end;
@@ -225,33 +242,122 @@ export default function GenerationChart({
                     onClick={() => onRangeChange(slice.start, slice.end)}
                     className={`transition cursor-pointer ${
                       active
-                        ? 'text-ink font-bold underline underline-offset-4 decoration-ink'
+                        ? isDark
+                          ? 'text-forest-bright font-bold underline underline-offset-4 decoration-forest-bright'
+                          : 'text-ink font-bold underline underline-offset-4 decoration-ink'
+                        : isDark
+                        ? 'text-sage/80 hover:text-paper'
                         : 'text-muted hover:text-ink'
                     }`}
                   >
                     {slice.label}
                   </button>
-                  {idx < timeSlices.length - 1 && <span className="text-divider">·</span>}
+                  {idx < timeSlices.length - 1 && (
+                    <span className={isDark ? 'text-[#2A5244]' : 'text-rule'}>·</span>
+                  )}
                 </React.Fragment>
               );
             })}
           </div>
+        </div>
 
-          <span className="text-divider hidden lg:inline">|</span>
+        {/* Series Visibility Toggles & Cutoff Gate */}
+        <div className="flex flex-wrap items-center gap-4 text-xs">
+          
+          {/* Toggles */}
+          <div className="flex items-center space-x-3.5">
+            <button
+              onClick={() => setShowActual(!showActual)}
+              className={`flex items-center space-x-1.5 transition cursor-pointer ${
+                showActual
+                  ? isDark
+                    ? 'text-forest-bright font-semibold'
+                    : 'text-forest font-semibold'
+                  : 'opacity-40'
+              }`}
+            >
+              <span
+                className={`h-0.5 w-3.5 inline-block ${
+                  isDark ? 'bg-forest-bright' : 'bg-forest'
+                }`}
+              />
+              <span>Actual</span>
+            </button>
 
-          {/* D-1 Decision Gate Selector */}
-          <div className="flex items-center space-x-1.5">
-            <span>Gate:</span>
+            <button
+              onClick={() => setShowForecast(!showForecast)}
+              className={`flex items-center space-x-1.5 transition cursor-pointer ${
+                showForecast
+                  ? isDark
+                    ? 'text-copper-bright font-semibold'
+                    : 'text-copper font-semibold'
+                  : 'opacity-40'
+              }`}
+            >
+              <span
+                className={`h-0.5 w-3.5 border-b border-dashed inline-block ${
+                  isDark ? 'border-copper-bright' : 'border-copper'
+                }`}
+              />
+              <span>Forecast</span>
+            </button>
+
+            <button
+              onClick={() => setShowShading(!showShading)}
+              className={`transition cursor-pointer ${
+                showShading
+                  ? isDark
+                    ? 'text-paper font-medium'
+                    : 'text-ink font-medium'
+                  : 'opacity-40'
+              }`}
+            >
+              <span>Shading</span>
+            </button>
+
+            <button
+              onClick={() => setShowErrorStrip(!showErrorStrip)}
+              className={`transition cursor-pointer ${
+                showErrorStrip
+                  ? isDark
+                    ? 'text-paper font-medium'
+                    : 'text-ink font-medium'
+                  : 'opacity-40'
+              }`}
+            >
+              <span>Error Strip</span>
+            </button>
+          </div>
+
+          <span className={isDark ? 'text-[#2A5244]' : 'text-rule'}>|</span>
+
+          {/* Cutoff Gate */}
+          <div className={`flex items-center space-x-1.5 ${isDark ? 'text-sage' : 'text-muted'}`}>
+            <span>Cutoff:</span>
             <select
               value={cutoffTime}
               onChange={(e) => onCutoffChange(e.target.value)}
-              className="bg-transparent text-ink font-mono focus:outline-none cursor-pointer border-b border-divider hover:border-ink py-0.5"
+              className={`bg-transparent font-mono focus:outline-none cursor-pointer border-b py-0.5 ${
+                isDark
+                  ? 'text-paper border-[#2A5244] hover:border-paper'
+                  : 'text-ink border-rule hover:border-ink'
+              }`}
             >
-              <option value="11:00:00">11:00 UTC (EPEX SPOT)</option>
-              <option value="12:00:00">12:00 UTC (NordPool GB)</option>
-              <option value="14:00:00">14:00 UTC (Post-Auction)</option>
-              <option value="17:00:00">17:00 UTC (Standard D-1 Close)</option>
-              <option value="23:00:00">23:00 UTC (D-1 Final)</option>
+              <option value="11:00:00" className={isDark ? 'bg-forest-deep text-paper' : ''}>
+                11:00 UTC (EPEX SPOT)
+              </option>
+              <option value="12:00:00" className={isDark ? 'bg-forest-deep text-paper' : ''}>
+                12:00 UTC (NordPool GB)
+              </option>
+              <option value="14:00:00" className={isDark ? 'bg-forest-deep text-paper' : ''}>
+                14:00 UTC (Post-Auction)
+              </option>
+              <option value="17:00:00" className={isDark ? 'bg-forest-deep text-paper' : ''}>
+                17:00 UTC (Standard D-1)
+              </option>
+              <option value="23:00:00" className={isDark ? 'bg-forest-deep text-paper' : ''}>
+                23:00 UTC (D-1 Final)
+              </option>
             </select>
           </div>
 
@@ -259,15 +365,25 @@ export default function GenerationChart({
 
       </div>
 
-      {/* 2. Main Generation Canvas (The Hero Instrument) */}
-      <div className="h-[420px] sm:h-[460px] w-full pt-4">
+      {/* 2. Main Generation Canvas (The Centerpiece) */}
+      <div className="h-[400px] sm:h-[450px] w-full pt-2">
         {loading ? (
-          <div className="h-full flex flex-col items-center justify-center text-muted font-mono text-xs">
-            <div className="h-6 w-6 border-2 border-forest border-t-transparent animate-spin mb-3" />
-            <span>Evaluating Elexon BMRS stream...</span>
+          <div className="h-full flex flex-col items-center justify-center font-mono text-xs">
+            <div
+              className={`h-6 w-6 border-2 border-t-transparent animate-spin mb-3 ${
+                isDark ? 'border-forest-bright' : 'border-forest'
+              }`}
+            />
+            <span className={isDark ? 'text-sage' : 'text-muted'}>
+              Evaluating Elexon stream observations...
+            </span>
           </div>
         ) : !processedData.length ? (
-          <div className="h-full flex items-center justify-center text-muted font-mono text-xs">
+          <div
+            className={`h-full flex items-center justify-center font-mono text-xs ${
+              isDark ? 'text-sage' : 'text-muted'
+            }`}
+          >
             No observations available for selected delivery range.
           </div>
         ) : (
@@ -275,11 +391,11 @@ export default function GenerationChart({
             <ComposedChart
               data={processedData}
               syncId="windscopeInstrument"
-              margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+              onClick={handleChartClick}
+              margin={{ top: 8, right: 10, left: -10, bottom: 0 }}
             >
-              {/* Minimal horizontal rules */}
               <CartesianGrid
-                stroke="#DDDCD2"
+                stroke={isDark ? '#1F3E33' : '#DDDCD2'}
                 strokeWidth={0.7}
                 vertical={false}
               />
@@ -296,85 +412,106 @@ export default function GenerationChart({
                   }
                   return v;
                 }}
-                stroke="#777D74"
-                tick={{ fontSize: 11, fill: '#777D74', fontFamily: 'IBM Plex Mono' }}
+                stroke={isDark ? '#A9BBAE' : '#777D74'}
+                tick={{
+                  fontSize: 11,
+                  fill: isDark ? '#A9BBAE' : '#777D74',
+                  fontFamily: 'IBM Plex Mono',
+                }}
                 minTickGap={45}
-                axisLine={{ stroke: '#DDDCD2', strokeWidth: 1 }}
-                tickLine={{ stroke: '#DDDCD2' }}
+                axisLine={{ stroke: isDark ? '#2A5244' : '#DDDCD2', strokeWidth: 1 }}
+                tickLine={{ stroke: isDark ? '#2A5244' : '#DDDCD2' }}
               />
 
               <YAxis
-                stroke="#777D74"
-                tick={{ fontSize: 11, fill: '#777D74', fontFamily: 'IBM Plex Mono' }}
+                stroke={isDark ? '#A9BBAE' : '#777D74'}
+                tick={{
+                  fontSize: 11,
+                  fill: isDark ? '#A9BBAE' : '#777D74',
+                  fontFamily: 'IBM Plex Mono',
+                }}
                 tickFormatter={(val) => `${(val / 1000).toFixed(0)}k`}
                 unit=" MW"
                 domain={['auto', 'auto']}
-                axisLine={{ stroke: '#DDDCD2', strokeWidth: 1 }}
-                tickLine={{ stroke: '#DDDCD2' }}
+                axisLine={{ stroke: isDark ? '#2A5244' : '#DDDCD2', strokeWidth: 1 }}
+                tickLine={{ stroke: isDark ? '#2A5244' : '#DDDCD2' }}
                 width={65}
               />
 
-              {/* Synchronized vertical crosshair */}
               <Tooltip
-                content={<InstrumentTooltip />}
-                cursor={{ stroke: '#777D74', strokeWidth: 1, strokeDasharray: '3 3' }}
+                content={<InstrumentTooltip viewMode={viewMode} />}
+                cursor={{
+                  stroke: isDark ? '#A9BBAE' : '#777D74',
+                  strokeWidth: 1,
+                  strokeDasharray: '3 3',
+                }}
                 isAnimationActive={false}
               />
 
-              {/* Overforecast Shading: Soft Copper Tint */}
+              {/* Overforecast Shading (Soft Copper) */}
               {showShading && (
                 <Area
                   type="monotone"
                   dataKey="overforecastBand"
                   name="Overforecast Area"
                   stroke="none"
-                  fill="#B96848"
-                  fillOpacity={0.16}
+                  fill={isDark ? '#F97316' : '#B96848'}
+                  fillOpacity={isDark ? 0.22 : 0.16}
                   isAnimationActive={false}
                   connectNulls={false}
                 />
               )}
 
-              {/* Underforecast Shading: Muted Forest Green Tint */}
+              {/* Underforecast Shading (Muted Forest) */}
               {showShading && (
                 <Area
                   type="monotone"
                   dataKey="underforecastBand"
                   name="Underforecast Area"
                   stroke="none"
-                  fill="#245C46"
-                  fillOpacity={0.12}
+                  fill={isDark ? '#3DD598' : '#245C46'}
+                  fillOpacity={isDark ? 0.18 : 0.12}
                   isAnimationActive={false}
                   connectNulls={false}
                 />
               )}
 
-              {/* Actual Generation Line: Deep Forest Green */}
+              {/* Actual Generation Line */}
               {showActual && (
                 <Line
                   type="monotone"
                   dataKey="actualGeneration"
                   name="Actual (FUELHH)"
-                  stroke="#245C46"
-                  strokeWidth={2.2}
+                  stroke={isDark ? '#3DD598' : '#245C46'}
+                  strokeWidth={2.4}
                   dot={false}
-                  activeDot={{ r: 4.5, fill: '#245C46', stroke: '#F6F5EF', strokeWidth: 2 }}
+                  activeDot={{
+                    r: 5,
+                    fill: isDark ? '#3DD598' : '#245C46',
+                    stroke: isDark ? '#142D25' : '#F6F5EF',
+                    strokeWidth: 2,
+                  }}
                   isAnimationActive={false}
                   connectNulls={false}
                 />
               )}
 
-              {/* Day-Ahead Forecast Line: Burnt Copper Dashed */}
+              {/* Day-Ahead Forecast Line */}
               {showForecast && (
                 <Line
                   type="monotone"
                   dataKey="forecastGeneration"
                   name="Forecast (WINDFOR)"
-                  stroke="#B96848"
-                  strokeWidth={1.8}
+                  stroke={isDark ? '#F97316' : '#B96848'}
+                  strokeWidth={1.9}
                   strokeDasharray="4 3"
                   dot={false}
-                  activeDot={{ r: 4.5, fill: '#B96848', stroke: '#F6F5EF', strokeWidth: 2 }}
+                  activeDot={{
+                    r: 5,
+                    fill: isDark ? '#F97316' : '#B96848',
+                    stroke: isDark ? '#142D25' : '#F6F5EF',
+                    strokeWidth: 2,
+                  }}
                   isAnimationActive={false}
                   connectNulls={false}
                 />
@@ -384,67 +521,203 @@ export default function GenerationChart({
         )}
       </div>
 
-      {/* 3. Linked Synchronized Error Strip Directly Below */}
+      {/* 3. Linked Synchronized Error Strip */}
       {showErrorStrip && processedData.length > 0 && (
-        <div className="pt-2 border-t border-divider/60">
-          <div className="flex items-baseline justify-between text-[11px] font-mono text-muted mb-1 px-1">
-            <span className="uppercase tracking-wider text-ink font-medium">
-              Synchronized Error Strip (Signed Error: Forecast − Actual in MW)
+        <div
+          className={`pt-2.5 mt-2 border-t ${
+            isDark ? 'border-[#2A5244]' : 'border-rule/70'
+          }`}
+        >
+          <div className="flex items-baseline justify-between text-[11px] font-mono mb-1 px-1">
+            <span
+              className={`uppercase tracking-wider font-medium ${
+                isDark ? 'text-paper' : 'text-ink'
+              }`}
+            >
+              Linked Signed Error Strip (Forecast − Actual in MW)
             </span>
             <div className="flex items-center space-x-3 text-[10px]">
-              <span className="flex items-center text-copper font-medium">
-                <span className="h-1.5 w-1.5 bg-copper mr-1 inline-block" />
+              <span className={`flex items-center font-medium ${isDark ? 'text-copper-bright' : 'text-copper'}`}>
+                <span
+                  className={`h-1.5 w-1.5 mr-1 inline-block ${
+                    isDark ? 'bg-copper-bright' : 'bg-copper'
+                  }`}
+                />
                 + Overforecast (Shortfall)
               </span>
-              <span className="flex items-center text-forest font-medium">
-                <span className="h-1.5 w-1.5 bg-forest mr-1 inline-block" />
+              <span className={`flex items-center font-medium ${isDark ? 'text-forest-bright' : 'text-forest'}`}>
+                <span
+                  className={`h-1.5 w-1.5 mr-1 inline-block ${
+                    isDark ? 'bg-forest-bright' : 'bg-forest'
+                  }`}
+                />
                 - Underforecast (Spill)
               </span>
             </div>
           </div>
 
-          <div className="h-28 w-full">
+          <div className="h-24 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 data={processedData}
                 syncId="windscopeInstrument"
-                margin={{ top: 4, right: 10, left: -10, bottom: 0 }}
+                onClick={handleChartClick}
+                margin={{ top: 2, right: 10, left: -10, bottom: 0 }}
               >
-                <CartesianGrid stroke="#DDDCD2" strokeWidth={0.6} vertical={false} />
+                <CartesianGrid
+                  stroke={isDark ? '#1F3E33' : '#DDDCD2'}
+                  strokeWidth={0.6}
+                  vertical={false}
+                />
 
                 <XAxis dataKey="startTime" hide={true} />
 
                 <YAxis
-                  stroke="#777D74"
-                  tick={{ fontSize: 10, fill: '#777D74', fontFamily: 'IBM Plex Mono' }}
+                  stroke={isDark ? '#A9BBAE' : '#777D74'}
+                  tick={{
+                    fontSize: 10,
+                    fill: isDark ? '#A9BBAE' : '#777D74',
+                    fontFamily: 'IBM Plex Mono',
+                  }}
                   tickFormatter={(v) => `${v > 0 ? '+' : ''}${(v / 1000).toFixed(0)}k`}
                   domain={['auto', 'auto']}
-                  axisLine={{ stroke: '#DDDCD2' }}
-                  tickLine={{ stroke: '#DDDCD2' }}
+                  axisLine={{ stroke: isDark ? '#2A5244' : '#DDDCD2' }}
+                  tickLine={{ stroke: isDark ? '#2A5244' : '#DDDCD2' }}
                   width={65}
                 />
 
-                <ReferenceLine y={0} stroke="#777D74" strokeWidth={1} />
+                <ReferenceLine
+                  y={0}
+                  stroke={isDark ? '#A9BBAE' : '#777D74'}
+                  strokeWidth={1}
+                />
 
-                <Tooltip content={<InstrumentTooltip />} isAnimationActive={false} />
+                <Tooltip content={<InstrumentTooltip viewMode={viewMode} />} isAnimationActive={false} />
 
-                {/* Positive Error (Overforecast): Burnt Copper */}
                 <Bar
                   dataKey="posError"
-                  fill="#B96848"
-                  opacity={0.85}
+                  fill={isDark ? '#F97316' : '#B96848'}
+                  opacity={0.88}
                   isAnimationActive={false}
                 />
 
-                {/* Negative Error (Underforecast): Deep Forest */}
                 <Bar
                   dataKey="negError"
-                  fill="#245C46"
-                  opacity={0.85}
+                  fill={isDark ? '#3DD598' : '#245C46'}
+                  opacity={0.88}
                   isAnimationActive={false}
                 />
               </ComposedChart>
             </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {/* 4. Selected-Interval Contextual Inspector */}
+      {selectedInterval && (
+        <div
+          className={`mt-4 p-4 border transition-all animate-fadeIn ${
+            isDark
+              ? 'bg-[#18362D] border-[#2A5244] text-paper'
+              : 'bg-paper-tint border-rule text-ink'
+          }`}
+        >
+          <div
+            className={`flex flex-col sm:flex-row sm:items-baseline justify-between pb-2 mb-3 border-b gap-2 ${
+              isDark ? 'border-[#2A5244]' : 'border-rule'
+            }`}
+          >
+            <div className="flex items-baseline space-x-3">
+              <span
+                className={`font-mono text-xs px-2 py-0.5 font-bold ${
+                  isDark ? 'bg-forest-bright text-forest-deep' : 'bg-forest text-paper'
+                }`}
+              >
+                SP {selectedInterval.settlementPeriod}
+              </span>
+              <span className="font-mono font-bold text-sm">
+                {selectedInterval.startTime?.replace('T', ' ').replace('Z', ' UTC')}
+              </span>
+              <span className={`text-xs ${isDark ? 'text-sage' : 'text-muted'}`}>
+                (Delivery Period)
+              </span>
+            </div>
+
+            <button
+              onClick={onCloseInspector}
+              className={`text-xs font-mono underline cursor-pointer self-start sm:self-auto ${
+                isDark ? 'text-sage hover:text-paper' : 'text-muted hover:text-ink'
+              }`}
+            >
+              Close Inspector [ESC]
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
+            <div>
+              <span className={`text-[11px] font-sans ${isDark ? 'text-sage' : 'text-muted'}`}>
+                Actual Generation
+              </span>
+              <div
+                className={`text-base font-bold mt-0.5 ${
+                  isDark ? 'text-forest-bright' : 'text-forest'
+                }`}
+              >
+                {selectedInterval.actualGeneration?.toLocaleString()} MW
+              </div>
+              <div className={`text-[10px] mt-0.5 ${isDark ? 'text-sage/80' : 'text-muted'}`}>
+                {(selectedInterval.actualGeneration * 0.5).toFixed(1)} MWh
+              </div>
+            </div>
+
+            <div>
+              <span className={`text-[11px] font-sans ${isDark ? 'text-sage' : 'text-muted'}`}>
+                Eligible DA Forecast
+              </span>
+              <div
+                className={`text-base font-bold mt-0.5 ${
+                  isDark ? 'text-copper-bright' : 'text-copper'
+                }`}
+              >
+                {selectedInterval.forecastGeneration?.toLocaleString()} MW
+              </div>
+              <div className={`text-[10px] mt-0.5 ${isDark ? 'text-sage/80' : 'text-muted'}`}>
+                {(selectedInterval.forecastGeneration * 0.5).toFixed(1)} MWh
+              </div>
+            </div>
+
+            <div>
+              <span className={`text-[11px] font-sans ${isDark ? 'text-sage' : 'text-muted'}`}>
+                Signed Error / Bias
+              </span>
+              <div
+                className={`text-base font-bold mt-0.5 ${
+                  selectedInterval.error > 0
+                    ? isDark ? 'text-copper-bright' : 'text-copper'
+                    : isDark ? 'text-forest-bright' : 'text-forest'
+                }`}
+              >
+                {selectedInterval.error > 0
+                  ? `+${selectedInterval.error.toLocaleString()}`
+                  : selectedInterval.error?.toLocaleString()}{' '}
+                MW
+              </div>
+              <div className={`text-[10px] mt-0.5 font-sans ${isDark ? 'text-sage' : 'text-muted'}`}>
+                {selectedInterval.error > 0 ? 'Overforecast Shortfall' : 'Underforecast Spill'}
+              </div>
+            </div>
+
+            <div>
+              <span className={`text-[11px] font-sans ${isDark ? 'text-sage' : 'text-muted'}`}>
+                Winning Vintage & Cutoff
+              </span>
+              <div className="text-[11px] font-bold mt-0.5 truncate">
+                Issued: {selectedInterval.forecastPublishTime?.replace('T', ' ').replace('Z', '') || 'None'}
+              </div>
+              <div className={`text-[10px] mt-0.5 truncate ${isDark ? 'text-sage' : 'text-muted'}`}>
+                Cutoff: {selectedInterval.decisionCutoffTime?.replace('T', ' ').replace('Z', '')}
+              </div>
+            </div>
           </div>
         </div>
       )}

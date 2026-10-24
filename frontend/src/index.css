@@ -17,14 +17,14 @@
   font-family: 'IBM Plex Mono', monospace;
 }
 
-/* Subtle, quiet scrollbars */
+/* Subtle, refined scrollbars */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F6F5EF;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
