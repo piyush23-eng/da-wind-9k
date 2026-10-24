@@ -3,7 +3,11 @@
  * Connects to FastAPI backend endpoints with configurable base URL.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (
+  typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://127.0.0.1:8000/api'
+    : '/api'
+);
 
 export async function fetchOverview(startDate = '2026-01-01', endDate = '2026-01-31', cutoffTime = '17:00:00') {
   const url = `${API_BASE_URL}/overview?start_date=${startDate}&end_date=${endDate}&cutoff_time=${cutoffTime}`;
