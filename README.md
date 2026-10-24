@@ -64,49 +64,57 @@ flowchart TD
 
 ### Directory Structure & Responsibilities
 ```
-windscope/
+da-wind-9k/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # FastAPI app initialization, CORS, route registration
+│   │   ├── main.py                 # FastAPI application, CORS middleware, and route mounting
 │   │   ├── api/
-│   │   │   └── endpoints.py     # REST routes (/overview, /generation, /accuracy, /intervals)
+│   │   │   └── endpoints.py        # REST routes (/overview, /generation, /accuracy, /intervals)
 │   │   ├── services/
-│   │   │   ├── elexon_client.py # Elexon BMRS ingestion, disk cache, fallback fixtures
-│   │   │   └── forecast_matcher.py # Core D-1 cutoff logic & lookahead bias prevention
+│   │   │   ├── elexon_client.py    # Official Elexon BMRS API streaming, local caching, and fallback
+│   │   │   └── forecast_matcher.py # Look-ahead bias prevention & D-1 cutoff matching engine
 │   │   ├── analytics/
-│   │   │   └── metrics.py       # MAE, RMSE, Mean Bias, distributions, GWh conversions
+│   │   │   └── metrics.py          # MAE, RMSE, Bias, GWh conversion, cashout exposure & de-biasing
 │   │   └── schemas/
-│   │       └── data_models.py   # Pydantic data validation schemas
+│   │       └── data_models.py      # Pydantic data schemas and validation models
 │   ├── tests/
-│   │   ├── test_forecast_matcher.py # Cutoff selection, rejection, and deduplication tests
-│   │   ├── test_metrics.py          # Hand-calculated metric verification tests
-│   │   └── test_api_endpoints.py    # Integration tests for FastAPI endpoints
-│   ├── data_cache/             # Local cache for sub-20ms query performance
-│   ├── requirements.txt         # Pinned Python dependencies
-│   └── Dockerfile               # Production Python container image
+│   │   ├── test_forecast_matcher.py # Look-ahead rejection and cutoff tests
+│   │   ├── test_metrics.py         # Hand-calculated mathematical benchmark tests
+│   │   └── test_api_endpoints.py   # API integration, validation (400 on inverted dates) & pagination
+│   ├── data_cache/                # Cached January 2026 Elexon records (1,488 actuals, 19,272 forecasts)
+│   ├── requirements.txt            # Python dependencies (fastapi, pandas, numpy, etc.)
+│   ├── Dockerfile                  # Python 3.11-slim container image
+│   └── main.py                     # Entrypoint module for Uvicorn and Vercel serverless
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Header.jsx           # Timeframe & D-1 Cutoff controls, live data badge
-│   │   │   ├── KpiCards.jsx         # Executive metrics (MAE, RMSE, Bias, Coverage)
-│   │   │   ├── GenerationChart.jsx  # Recharts Actual vs Forecast time-series
-│   │   │   ├── AccuracySection.jsx  # Error distribution histogram & daily breakdown
-│   │   │   ├── IntervalTable.jsx    # Paginated interval ledger & CSV export
-│   │   │   └── TransparencyModal.jsx # Data lineage and math methodology
+│   │   │   ├── Header.jsx          # Top navigation, animated sliding view switcher, and methodology link
+│   │   │   ├── ChartToolbar.jsx    # Time horizon presets, anomaly jump buttons, and display toggles
+│   │   │   ├── GenerationChart.jsx # Recharts dual-curve time series with difference shading & inspector
+│   │   │   ├── EditorialInsightRow.jsx # Dynamic 3/4-column metrics (MAE, RMSE, Bias, Coverage, Exposure)
+│   │   │   ├── OverviewExecutiveSummary.jsx # 3-Pillar commercial findings and trading protocol
+│   │   │   ├── IntervalAuditTable.jsx  # Paginated 1,487-row settlement ledger with CSV export
+│   │   │   ├── DiurnalProfileModal.jsx # 48-Settlement-Period diurnal curve & bias bar chart
+│   │   │   └── CollapsibleMethodology.jsx # Technical data lineage, cutoff formula, and MW/MWh math
 │   │   ├── services/
-│   │   │   └── api.js               # API service connecting to backend
-│   │   ├── App.jsx                  # Main dashboard layout
-│   │   ├── index.css                # Tailwind CSS styling & custom scrollbars
-│   │   └── main.jsx                 # React root mount
-│   ├── nginx.conf               # Production Nginx reverse-proxy
-│   ├── package.json             # Frontend dependencies
-│   ├── tailwind.config.js       # Color palette: Dark Navy (#070b14) & Electric Teal
-│   ├── vite.config.js           # Vite dev server and proxy
-│   └── Dockerfile               # Multi-stage production container
-├── docker-compose.yml           # Full-stack container orchestration
-├── .gitignore                   # Ignores venv, node_modules, keys, caches
-├── .env.example                 # Environment configuration template
-└── README.md                    # Documentation
+│   │   │   └── api.js              # Client service with local in-memory caching and base URL detection
+│   │   ├── App.jsx                 # Main dual-workspace layout (Overview vs. Analysis) & key bindings
+│   │   ├── index.css               # Editorial serif & IBM Plex Mono typography, Tailwind styles
+│   │   └── main.jsx                # React root mount
+│   ├── Dockerfile                  # Multi-stage container (Node 20 build -> Nginx Alpine runtime)
+│   ├── nginx.conf                  # Nginx reverse proxy routing /api/ calls to backend
+│   ├── package.json                # Frontend dependencies (React, Recharts, Lucide, Tailwind)
+│   ├── tailwind.config.js          # High-contrast palette: Paper (#F6F5EF), Forest (#245C46), Copper (#B96848)
+│   └── vite.config.js              # Vite bundler configuration with vendor and chart chunk splitting
+├── api/
+│   └── index.py                    # Vercel serverless Python bridge importing backend app
+├── docker-compose.yml              # Multi-container local orchestration (backend :8000, frontend :3000)
+├── Procfile                        # Heroku web dyno process declaration
+├── vercel.json                     # Multi-service project configuration for Vercel
+├── package.json                    # Root build orchestration
+├── requirements.txt                # Pinned dependencies for Vercel runtime
+├── .gitignore                      # Excludes venv, node_modules, cache, dist
+└── README.md                       # Comprehensive documentation
 ```
 
 ---
@@ -200,7 +208,7 @@ cd backend
 source venv/bin/activate
 python -m pytest tests/
 ```
-**Result:** `10 passed in 2.95s`
+**Result:** `12 passed in 2.79s`
 
 ---
 
