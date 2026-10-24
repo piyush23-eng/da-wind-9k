@@ -12,35 +12,35 @@ export default {
         mono: ['"IBM Plex Mono"', 'monospace'],
       },
       colors: {
-        paper: {
-          DEFAULT: '#F7F6F0',
+        chalk: {
+          DEFAULT: '#F6F5EF',
           pure: '#FFFFFF',
-          tint: '#EFEFE8',
+          subtle: '#EFEFE8',
+          tint: '#E8E7DF',
         },
         ink: {
-          DEFAULT: '#202821',
-          light: '#3A443B',
+          DEFAULT: '#1C2922',
+          light: '#334038',
+          soft: '#4A564F',
         },
         forest: {
           DEFAULT: '#245C46',
           dark: '#1A4333',
           light: '#2E7559',
-          tint: 'rgba(36, 92, 70, 0.08)',
         },
-        rust: {
-          DEFAULT: '#B96745',
-          dark: '#9E5233',
-          light: '#CF7D5B',
-          tint: 'rgba(185, 103, 69, 0.10)',
+        copper: {
+          DEFAULT: '#B96848',
+          dark: '#9E5235',
+          light: '#CF7D5E',
         },
         muted: {
-          DEFAULT: '#777A70',
-          light: '#9DA096',
-          faint: '#B8BAB2',
+          DEFAULT: '#777D74',
+          light: '#9DA29A',
+          faint: '#B8BCB5',
         },
-        rule: {
-          DEFAULT: '#DFDED5',
-          dark: '#CBC9BF',
+        divider: {
+          DEFAULT: '#DDDCD2',
+          dark: '#CBC9BE',
         }
       }
     },

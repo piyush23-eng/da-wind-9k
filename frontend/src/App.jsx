@@ -58,17 +58,17 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-paper text-ink flex flex-col font-sans selection:bg-forest/15 selection:text-forest">
+    <div className="min-h-screen bg-chalk text-ink flex flex-col font-sans selection:bg-forest/15 selection:text-forest">
       
-      {/* 1. EDITORIAL HEADER & MASTHEAD */}
+      {/* 1. SLIM EDITORIAL NAVIGATION & HEADLINE */}
       <Header onOpenMethodology={handleOpenMethodology} />
 
-      {/* MAIN PUBLICATION SPREAD */}
+      {/* 2. MAIN PUBLICATION SPREAD */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-6">
         
-        {/* Error Notice */}
+        {/* Error Notice if connection fails */}
         {error && (
-          <div className="my-4 p-4 border border-rust/40 bg-rust/5 text-rust font-mono text-xs flex justify-between items-center">
+          <div className="my-4 p-4 border border-copper/40 bg-copper/5 text-copper font-mono text-xs flex justify-between items-center">
             <div>
               <strong>Stream Connection Error:</strong> {error}
             </div>
@@ -81,8 +81,8 @@ export default function App() {
           </div>
         )}
 
-        {/* 2. THE HERO CHART */}
-        <section aria-label="Hero Wind Generation Time-Series">
+        {/* 3. HERO CHART & LINKED ERROR STRIP */}
+        <section aria-label="Wind Generation Visualisation Instrument">
           <GenerationChart
             data={generationData}
             loading={loading}
@@ -94,25 +94,20 @@ export default function App() {
           />
         </section>
 
-        {/* 3. SINGLE EDITORIAL INSIGHT ROW */}
+        {/* 4. EDITORIAL INSIGHT ROW */}
         <EditorialInsightRow
           metrics={overview?.metrics}
           audit={overview?.audit}
         />
 
-        {/* 4. BELOW THE FOLD: QUIETER ANALYTICAL DEPTH */}
+        {/* 5. BELOW-THE-FOLD ANALYTICAL DEPTH */}
         
-        {/* Compact Forecast Error Chronology */}
-        <ErrorTimelineChart
-          data={generationData}
-          loading={loading}
-        />
-
-        {/* Settlement Period Audit Ledger */}
+        {/* Settlement Period Audit Ledger with RMSE Summary */}
         <IntervalAuditTable
           startDate={startDate}
           endDate={endDate}
           cutoffTime={cutoffTime}
+          metrics={overview?.metrics}
         />
 
         {/* Collapsible Methodology Section */}
@@ -124,18 +119,18 @@ export default function App() {
 
       </main>
 
-      {/* 5. EDITORIAL FOOTER */}
-      <footer className="py-12 border-t border-rule mt-12 bg-paper text-xs text-muted font-mono">
+      {/* 6. EDITORIAL FOOTER */}
+      <footer className="py-12 border-t border-divider mt-12 bg-chalk text-xs text-muted font-mono">
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-baseline justify-between gap-4">
           <div className="space-y-1">
-            <div className="font-bold text-ink">WINDSCOPE — FIELD NOTES ON WIND</div>
-            <div className="text-[11px]">
+            <div className="font-bold tracking-widest text-ink">WINDSCOPE / FIELD NOTES ON WIND</div>
+            <div className="text-[11px] font-sans">
               Independent quantitative analysis of British wholesale electricity markets.
             </div>
           </div>
           <div className="flex items-center space-x-4 text-[11px]">
-            <span>Data: Elexon BMRS (FUELHH & WINDFOR)</span>
-            <span className="text-rule">/</span>
+            <span>Elexon BMRS Stream</span>
+            <span className="text-divider">/</span>
             <span>All times UTC (GMT)</span>
           </div>
         </div>
