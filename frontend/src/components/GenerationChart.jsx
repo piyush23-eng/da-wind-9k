@@ -11,6 +11,7 @@ import {
   CartesianGrid,
   ReferenceLine
 } from 'recharts';
+import ChartToolbar from './ChartToolbar';
 
 /**
  * Aligned numerical research tooltip.
@@ -172,16 +173,6 @@ export default function GenerationChart({
 
   const isDark = viewMode === 'analysis';
 
-  // Date horizon options
-  const timeSlices = [
-    { label: 'All of January', start: '2026-01-01', end: '2026-01-31' },
-    { label: 'Week 1', start: '2026-01-01', end: '2026-01-07' },
-    { label: 'Week 2', start: '2026-01-08', end: '2026-01-14' },
-    { label: 'Week 3', start: '2026-01-15', end: '2026-01-21' },
-    { label: 'Week 4', start: '2026-01-22', end: '2026-01-28' },
-    { label: 'Late Jan', start: '2026-01-25', end: '2026-01-31' },
-  ];
-
   // Process data for dual-tint difference area
   const processedData = useMemo(() => {
     if (!data || !data.length) return [];
@@ -221,149 +212,23 @@ export default function GenerationChart({
       }`}
     >
       
-      {/* 1. Compact Single-Row Controls Bar */}
-      <div
-        className={`flex flex-col lg:flex-row lg:items-center justify-between pb-3.5 mb-3 border-b gap-3 text-xs font-mono ${
-          isDark ? 'border-[#2A5244]' : 'border-rule'
-        }`}
-      >
-        
-        {/* Horizon Links */}
-        <div className="flex flex-wrap items-center gap-3">
-          <span className={`text-[11px] font-sans ${isDark ? 'text-sage' : 'text-muted'}`}>
-            Horizon:
-          </span>
-          <div className="flex items-center space-x-2">
-            {timeSlices.map((slice, idx) => {
-              const active = startDate === slice.start && endDate === slice.end;
-              return (
-                <React.Fragment key={slice.label}>
-                  <button
-                    onClick={() => onRangeChange(slice.start, slice.end)}
-                    className={`transition cursor-pointer ${
-                      active
-                        ? isDark
-                          ? 'text-forest-bright font-bold underline underline-offset-4 decoration-forest-bright'
-                          : 'text-ink font-bold underline underline-offset-4 decoration-ink'
-                        : isDark
-                        ? 'text-sage/80 hover:text-paper'
-                        : 'text-muted hover:text-ink'
-                    }`}
-                  >
-                    {slice.label}
-                  </button>
-                  {idx < timeSlices.length - 1 && (
-                    <span className={isDark ? 'text-[#2A5244]' : 'text-rule'}>·</span>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Series Visibility Toggles & Cutoff Gate */}
-        <div className="flex flex-wrap items-center gap-4 text-xs">
-          
-          {/* Toggles */}
-          <div className="flex items-center space-x-3.5">
-            <button
-              onClick={() => setShowActual(!showActual)}
-              className={`flex items-center space-x-1.5 transition cursor-pointer ${
-                showActual
-                  ? isDark
-                    ? 'text-forest-bright font-semibold'
-                    : 'text-forest font-semibold'
-                  : 'opacity-40'
-              }`}
-            >
-              <span
-                className={`h-0.5 w-3.5 inline-block ${
-                  isDark ? 'bg-forest-bright' : 'bg-forest'
-                }`}
-              />
-              <span>Actual</span>
-            </button>
-
-            <button
-              onClick={() => setShowForecast(!showForecast)}
-              className={`flex items-center space-x-1.5 transition cursor-pointer ${
-                showForecast
-                  ? isDark
-                    ? 'text-copper-bright font-semibold'
-                    : 'text-copper font-semibold'
-                  : 'opacity-40'
-              }`}
-            >
-              <span
-                className={`h-0.5 w-3.5 border-b border-dashed inline-block ${
-                  isDark ? 'border-copper-bright' : 'border-copper'
-                }`}
-              />
-              <span>Forecast</span>
-            </button>
-
-            <button
-              onClick={() => setShowShading(!showShading)}
-              className={`transition cursor-pointer ${
-                showShading
-                  ? isDark
-                    ? 'text-paper font-medium'
-                    : 'text-ink font-medium'
-                  : 'opacity-40'
-              }`}
-            >
-              <span>Shading</span>
-            </button>
-
-            <button
-              onClick={() => setShowErrorStrip(!showErrorStrip)}
-              className={`transition cursor-pointer ${
-                showErrorStrip
-                  ? isDark
-                    ? 'text-paper font-medium'
-                    : 'text-ink font-medium'
-                  : 'opacity-40'
-              }`}
-            >
-              <span>Error Strip</span>
-            </button>
-          </div>
-
-          <span className={isDark ? 'text-[#2A5244]' : 'text-rule'}>|</span>
-
-          {/* Cutoff Gate */}
-          <div className={`flex items-center space-x-1.5 ${isDark ? 'text-sage' : 'text-muted'}`}>
-            <span>Cutoff:</span>
-            <select
-              value={cutoffTime}
-              onChange={(e) => onCutoffChange(e.target.value)}
-              className={`bg-transparent font-mono focus:outline-none cursor-pointer border-b py-0.5 ${
-                isDark
-                  ? 'text-paper border-[#2A5244] hover:border-paper'
-                  : 'text-ink border-rule hover:border-ink'
-              }`}
-            >
-              <option value="11:00:00" className={isDark ? 'bg-forest-deep text-paper' : ''}>
-                11:00 UTC (EPEX SPOT)
-              </option>
-              <option value="12:00:00" className={isDark ? 'bg-forest-deep text-paper' : ''}>
-                12:00 UTC (NordPool GB)
-              </option>
-              <option value="14:00:00" className={isDark ? 'bg-forest-deep text-paper' : ''}>
-                14:00 UTC (Post-Auction)
-              </option>
-              <option value="17:00:00" className={isDark ? 'bg-forest-deep text-paper' : ''}>
-                17:00 UTC (Standard D-1)
-              </option>
-              <option value="23:00:00" className={isDark ? 'bg-forest-deep text-paper' : ''}>
-                23:00 UTC (D-1 Final)
-              </option>
-            </select>
-          </div>
-
-        </div>
-
-      </div>
+      {/* 1. Polished Segmented Workstation Toolbar */}
+      <ChartToolbar
+        startDate={startDate}
+        endDate={endDate}
+        onRangeChange={onRangeChange}
+        cutoffTime={cutoffTime}
+        onCutoffChange={onCutoffChange}
+        showActual={showActual}
+        setShowActual={setShowActual}
+        showForecast={showForecast}
+        setShowForecast={setShowForecast}
+        showShading={showShading}
+        setShowShading={setShowShading}
+        showErrorStrip={showErrorStrip}
+        setShowErrorStrip={setShowErrorStrip}
+        viewMode={viewMode}
+      />
 
       {/* 2. Main Generation Canvas (The Centerpiece) */}
       <div className="h-[400px] sm:h-[450px] w-full pt-2">
