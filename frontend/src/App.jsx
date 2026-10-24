@@ -6,7 +6,7 @@ import AccuracySection from './components/AccuracySection';
 import IntervalTable from './components/IntervalTable';
 import TransparencyModal from './components/TransparencyModal';
 import { fetchOverview, fetchGenerationTimeseries, fetchAccuracy } from './services/api';
-import { AlertTriangle, ExternalLink, Github, Info, Wind } from 'lucide-react';
+import { AlertTriangle, Info, Wind } from 'lucide-react';
 
 export default function App() {
   const [startDate, setStartDate] = useState('2026-01-01');
@@ -46,72 +46,84 @@ export default function App() {
     }
   };
 
+  const handleRangeChange = (start, end) => {
+    setStartDate(start);
+    setEndDate(end);
+  };
+
+  const handleCutoffChange = (newCutoff) => {
+    setCutoffTime(newCutoff);
+  };
+
   return (
-    <div className="min-h-screen bg-[#070c18] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F5F4ED] text-[#1C2421] flex flex-col font-sans selection:bg-[#245C46]/15 selection:text-[#245C46]">
       
       {/* Top Header */}
       <Header
-        startDate={startDate}
-        setStartDate={setStartDate}
-        endDate={endDate}
-        setEndDate={setEndDate}
-        cutoffTime={cutoffTime}
-        setCutoffTime={setCutoffTime}
         dataSource={overview?.dataSource || 'live_elexon'}
         loading={loading}
         onRefresh={loadAllData}
         onOpenTransparency={() => setTransparencyOpen(true)}
       />
 
-      {/* Main Container */}
+      {/* Main Content Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
         
-        {/* Error State Banner */}
+        {/* Error Alert Banner */}
         {error && (
-          <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-4 flex items-start space-x-3 text-rose-300">
-            <AlertTriangle className="h-5 w-5 text-rose-400 mt-0.5 flex-shrink-0" />
-            <div className="flex-1 text-sm">
-              <span className="font-semibold">Backend Connection Issue:</span> {error}
-              <div className="mt-1 text-xs text-rose-400/80">
-                Please verify that the FastAPI backend server is running on port 8000.
+          <div className="bg-[#D76B42]/10 border border-[#D76B42]/30 rounded-2xl p-4 flex items-start space-x-3 text-[#B8532D]">
+            <AlertTriangle className="h-5 w-5 text-[#D76B42] mt-0.5 flex-shrink-0" />
+            <div className="flex-1 text-xs font-mono">
+              <span className="font-bold font-sans text-sm">Backend Connectivity Alert:</span> {error}
+              <div className="mt-1 text-[#8A928D] font-sans">
+                Ensure the FastAPI backend server is active on port 8000.
               </div>
             </div>
             <button
               onClick={loadAllData}
-              className="text-xs bg-rose-500/20 hover:bg-rose-500/30 px-3 py-1 rounded-md text-white transition font-medium"
+              className="text-xs bg-[#D76B42]/15 hover:bg-[#D76B42]/25 px-3 py-1 rounded-lg text-[#B8532D] font-bold transition font-mono"
             >
               Retry
             </button>
           </div>
         )}
 
-        {/* Informational Sub-banner for Utility Traders */}
-        <div className="bg-[#0b1329]/60 border border-slate-800/80 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-300 gap-2">
+        {/* Editorial Market Context Bar */}
+        <div className="bg-[#FAF9F5] border border-[#DBD8CA] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#5C6460] shadow-sm gap-2">
           <div className="flex items-center space-x-2">
-            <Info className="h-4 w-4 text-teal-400 flex-shrink-0" />
+            <Info className="h-4 w-4 text-[#245C46] flex-shrink-0" />
             <span>
-              Evaluating <strong className="text-white">Day-Ahead Wind Forecasts</strong> for GB Wholesale Procurement during{' '}
-              <span className="font-mono text-teal-300 font-medium">January 2026</span>.
+              Evaluating <strong className="text-[#1C2421]">Day-Ahead Wind Forecast Reliability</strong> for Great Britain Wholesale Procurement across{' '}
+              <span className="font-mono text-[#245C46] font-bold">January 2026</span>.
             </span>
           </div>
-          <div className="font-mono text-slate-400 text-[11px]">
-            Cutoff Policy: <span className="text-amber-300">D-1 @ {cutoffTime} UTC</span>
+          <div className="font-mono text-[#5C6460] text-[11px] flex items-center space-x-2">
+            <span>Enforced Cutoff:</span>
+            <span className="px-2 py-0.5 rounded bg-[#F0EFE7] border border-[#DBD8CA] text-[#1C2421] font-bold">
+              D-1 @ {cutoffTime} UTC
+            </span>
           </div>
         </div>
 
-        {/* KPI Summary Cards */}
+        {/* Executive KPI Cards */}
         <KpiCards
           metrics={overview?.metrics}
           audit={overview?.audit}
         />
 
-        {/* Primary Time-Series Visualizer */}
+        {/* SIGNATURE PRIMARY INTERACTIVE TIME-SERIES VISUALIZATION */}
         <GenerationChart
           data={generationData}
           loading={loading}
+          metrics={overview?.metrics}
+          startDate={startDate}
+          endDate={endDate}
+          onRangeChange={handleRangeChange}
+          cutoffTime={cutoffTime}
+          onCutoffChange={handleCutoffChange}
         />
 
-        {/* Forecast Accuracy & Error Breakdown */}
+        {/* Accuracy Distribution & Volatility Breakdown */}
         <AccuracySection
           accuracyData={accuracyData}
           largestErrors={overview?.largestErrors}
@@ -126,25 +138,25 @@ export default function App() {
 
       </main>
 
-      {/* Transparency & Lineage Modal */}
+      {/* Methodology & Lineage Transparency Modal */}
       <TransparencyModal
         isOpen={transparencyOpen}
         onClose={() => setTransparencyOpen(false)}
         overviewData={overview}
       />
 
-      {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-[#060a14] py-6 px-6 mt-12 text-xs text-slate-500">
+      {/* Editorial Footer */}
+      <footer className="border-t border-[#DBD8CA] bg-[#FAF9F5] py-6 px-6 mt-12 text-xs text-[#5C6460]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center space-x-2">
-            <Wind className="h-4 w-4 text-teal-500" />
-            <span className="font-semibold text-slate-400">WindScope</span>
-            <span>— UK Electricity Day-Ahead Wind Evaluation Engine</span>
+            <Wind className="h-4 w-4 text-[#245C46]" />
+            <span className="font-bold text-[#1C2421]">WindScope</span>
+            <span>— Great Britain Electricity Day-Ahead Wind Evaluation Engine</span>
           </div>
-          <div className="flex items-center space-x-4">
-            <span className="text-slate-500 font-mono">Data: Elexon BMRS (FUELHH & WINDFOR)</span>
-            <span className="text-slate-600">|</span>
-            <span className="text-slate-500 font-mono">Timezone: UTC (GMT)</span>
+          <div className="flex items-center space-x-4 font-mono text-[11px]">
+            <span>Data: Elexon BMRS (FUELHH & WINDFOR)</span>
+            <span className="text-[#DBD8CA]">|</span>
+            <span>Timezone: UTC (GMT)</span>
           </div>
         </div>
       </footer>

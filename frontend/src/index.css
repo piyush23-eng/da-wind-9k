@@ -3,29 +3,36 @@
 @tailwind utilities;
 
 :root {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  color-scheme: dark;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light;
+  background-color: #F5F4ED;
+  color: #1C2421;
 }
 
 code, pre, .font-mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'IBM Plex Mono', monospace;
 }
 
-/* Custom dark scrollbar */
+/* Warm editorial scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #080d1a;
+  background: #F0EFE7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #DBD8CA;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #B4BCB7;
+}
+
+/* Crisp SVG chart transitions */
+.recharts-line-curve {
+  transition: stroke-width 0.15s ease-out;
 }
