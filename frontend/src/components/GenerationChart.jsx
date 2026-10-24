@@ -541,10 +541,14 @@ export default function GenerationChart({
                   isDark ? 'text-forest-bright' : 'text-forest'
                 }`}
               >
-                {selectedInterval.actualGeneration?.toLocaleString()} MW
+                {selectedInterval.actualGeneration != null
+                  ? `${selectedInterval.actualGeneration.toLocaleString()} MW`
+                  : 'Missing'}
               </div>
               <div className={`text-[10px] mt-0.5 ${isDark ? 'text-sage/80' : 'text-muted'}`}>
-                {(selectedInterval.actualGeneration * 0.5).toFixed(1)} MWh
+                {selectedInterval.actualGeneration != null
+                  ? `${(selectedInterval.actualGeneration * 0.5).toFixed(1)} MWh`
+                  : '—'}
               </div>
             </div>
 
@@ -557,10 +561,14 @@ export default function GenerationChart({
                   isDark ? 'text-copper-bright' : 'text-copper'
                 }`}
               >
-                {selectedInterval.forecastGeneration?.toLocaleString()} MW
+                {selectedInterval.forecastGeneration != null
+                  ? `${selectedInterval.forecastGeneration.toLocaleString()} MW`
+                  : 'Unscheduled'}
               </div>
               <div className={`text-[10px] mt-0.5 ${isDark ? 'text-sage/80' : 'text-muted'}`}>
-                {(selectedInterval.forecastGeneration * 0.5).toFixed(1)} MWh
+                {selectedInterval.forecastGeneration != null
+                  ? `${(selectedInterval.forecastGeneration * 0.5).toFixed(1)} MWh`
+                  : '—'}
               </div>
             </div>
 
@@ -575,13 +583,14 @@ export default function GenerationChart({
                     : isDark ? 'text-forest-bright' : 'text-forest'
                 }`}
               >
-                {selectedInterval.error > 0
-                  ? `+${selectedInterval.error.toLocaleString()}`
-                  : selectedInterval.error?.toLocaleString()}{' '}
-                MW
+                {selectedInterval.error != null
+                  ? `${selectedInterval.error > 0 ? '+' : ''}${selectedInterval.error.toLocaleString()} MW`
+                  : '—'}
               </div>
               <div className={`text-[10px] mt-0.5 font-sans ${isDark ? 'text-sage' : 'text-muted'}`}>
-                {selectedInterval.error > 0 ? 'Overforecast Shortfall' : 'Underforecast Spill'}
+                {selectedInterval.error != null
+                  ? selectedInterval.error > 0 ? 'Overforecast Shortfall' : 'Underforecast Spill'
+                  : 'Unmatched'}
               </div>
             </div>
 
@@ -593,7 +602,7 @@ export default function GenerationChart({
                 Issued: {selectedInterval.forecastPublishTime?.replace('T', ' ').replace('Z', '') || 'None'}
               </div>
               <div className={`text-[10px] mt-0.5 truncate ${isDark ? 'text-sage' : 'text-muted'}`}>
-                Cutoff: {selectedInterval.decisionCutoffTime?.replace('T', ' ').replace('Z', '')}
+                Cutoff: {selectedInterval.decisionCutoffTime?.replace('T', ' ').replace('Z', '') || 'D-1 Cutoff'}
               </div>
             </div>
           </div>

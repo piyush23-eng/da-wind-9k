@@ -41,3 +41,22 @@ def test_intervals_pagination():
     assert data["page"] == 1
     assert data["pageSize"] == 20
     assert len(data["items"]) == 20
+
+
+def test_inverted_dates_returns_400():
+    """Verify that start_date > end_date returns HTTP 400 Bad Request."""
+    response = client.get("/api/overview?start_date=2026-01-15&end_date=2026-01-10")
+    assert response.status_code == 400
+    assert "start_date must be less than or equal to end_date" in response.json()["detail"]
+
+
+def test_generation_timeseries_metadata():
+    """Verify that timeseries payload includes enriched decision cutoff and error fields."""
+    response = client.get("/api/generation?start_date=2026-01-01&end_date=2026-01-01")
+    assert response.status_code == 200
+    data = response.json()
+    first_item = data["data"][0]
+    assert "decisionCutoffTime" in first_item
+    assert "absoluteError" in first_item
+    assert "percentageError" in first_item
+

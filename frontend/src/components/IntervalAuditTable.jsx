@@ -69,7 +69,8 @@ export default function IntervalAuditTable({
   });
 
   const exportCSV = () => {
-    if (!data.items || !data.items.length) return;
+    const itemsToExport = filteredItems.length > 0 ? filteredItems : (data.items || []);
+    if (!itemsToExport.length) return;
     const headers = [
       'Delivery Time (UTC)',
       'Date',
@@ -81,7 +82,7 @@ export default function IntervalAuditTable({
       'Absolute Error (MW)',
       'Status'
     ];
-    const rows = data.items.map((iv) => [
+    const rows = itemsToExport.map((iv) => [
       iv.startTime,
       iv.deliveryDate,
       iv.settlementPeriod,

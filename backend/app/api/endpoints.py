@@ -26,6 +26,12 @@ def get_evaluation_data(
     force_refresh: bool = False
 ) -> Dict[str, Any]:
     """Retrieve actuals and forecasts, execute matching, and return data + audit."""
+    if start_date > end_date:
+        raise HTTPException(
+            status_code=400,
+            detail="start_date must be less than or equal to end_date"
+        )
+
     actuals, actuals_src = elexon_client.get_january_2026_actuals(force_refresh=force_refresh)
     forecasts, forecasts_src = elexon_client.get_january_2026_forecasts(force_refresh=force_refresh)
 
@@ -121,8 +127,12 @@ def get_generation_timeseries(
             "actualGeneration": iv["actualGeneration"],
             "forecastGeneration": iv["forecastGeneration"],
             "error": iv["error"],
+            "absoluteError": iv.get("absoluteError"),
+            "percentageError": iv.get("percentageError"),
             "forecastPublishTime": iv["forecastPublishTime"],
-            "isMatched": iv["isMatched"]
+            "decisionCutoffTime": iv.get("decisionCutoffTime"),
+            "isMatched": iv["isMatched"],
+            "missingReason": iv.get("missingReason")
         })
 
     return {

@@ -48,6 +48,11 @@ def compute_accuracy_metrics(
             "exactMatchCount": 0,
             "maxOverforecast": None,
             "maxUnderforecast": None,
+            "rmseRatio": 1.0,
+            "imbalanceMWh": 0.0,
+            "estimatedImbalanceExposureGbp": 0.0,
+            "debiasedMae": 0.0,
+            "potentialSavingsGbp": 0.0,
             "units": "MW",
         }
 

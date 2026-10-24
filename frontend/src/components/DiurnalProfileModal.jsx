@@ -36,7 +36,9 @@ function DiurnalTooltip({ active, payload }) {
         </div>
         <div className="flex justify-between space-x-5 pt-1 border-t border-rule">
           <span className="text-muted">Mean Bias:</span>
-          <span className="font-bold text-copper">+{Math.round(d.avgBias).toLocaleString()} MW</span>
+          <span className={`font-bold ${d.avgBias >= 0 ? 'text-copper' : 'text-forest'}`}>
+            {d.avgBias > 0 ? '+' : ''}{Math.round(d.avgBias).toLocaleString()} MW
+          </span>
         </div>
       </div>
     </div>
@@ -143,7 +145,7 @@ export default function DiurnalProfileModal({ isOpen, onClose, data = [] }) {
 
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={diurnalData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <ComposedChart syncId="diurnalSync" data={diurnalData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <CartesianGrid
                     stroke="#E5E4DC"
                     strokeWidth={0.7}
@@ -214,7 +216,7 @@ export default function DiurnalProfileModal({ isOpen, onClose, data = [] }) {
 
             <div className="h-28 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={diurnalData} margin={{ top: 2, right: 10, left: 0, bottom: 0 }}>
+                <ComposedChart syncId="diurnalSync" data={diurnalData} margin={{ top: 2, right: 10, left: 0, bottom: 0 }}>
                   <CartesianGrid stroke="#E5E4DC" strokeWidth={0.6} vertical={false} />
                   <XAxis dataKey="sp" hide={true} />
                   <YAxis
@@ -223,6 +225,7 @@ export default function DiurnalProfileModal({ isOpen, onClose, data = [] }) {
                     tickFormatter={(v) => `+${(v / 1000).toFixed(1)}k`}
                     width={45}
                   />
+                  <Tooltip content={<DiurnalTooltip />} />
                   <ReferenceLine y={0} stroke="#777D74" strokeWidth={1} />
                   <Bar
                     dataKey="avgBias"
