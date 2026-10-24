@@ -4,6 +4,7 @@ import GenerationChart from './components/GenerationChart';
 import EditorialInsightRow from './components/EditorialInsightRow';
 import IntervalAuditTable from './components/IntervalAuditTable';
 import CollapsibleMethodology from './components/CollapsibleMethodology';
+import DiurnalProfileModal from './components/DiurnalProfileModal';
 import { fetchOverview, fetchGenerationTimeseries } from './services/api';
 
 export default function App() {
@@ -17,21 +18,49 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showMethodology, setShowMethodology] = useState(false);
+  const [showDiurnalModal, setShowDiurnalModal] = useState(false);
 
   // Workstation 4.0 States
   const [viewMode, setViewMode] = useState('editorial'); // 'editorial' | 'analysis'
   const [selectedInterval, setSelectedInterval] = useState(null);
 
-  // Global ESC listener to dismiss selected interval inspector
+  // Global Keyboard Navigation: [ESC] dismisses, [←] and [→] step intervals
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         setSelectedInterval(null);
+        setShowDiurnalModal(false);
+      } else if (e.key === 'ArrowRight') {
+        if (!generationData || !generationData.length) return;
+        e.preventDefault();
+        if (!selectedInterval) {
+          setSelectedInterval(generationData[0]);
+        } else {
+          const idx = generationData.findIndex(
+            (d) => d.startTime === selectedInterval.startTime
+          );
+          if (idx >= 0 && idx < generationData.length - 1) {
+            setSelectedInterval(generationData[idx + 1]);
+          }
+        }
+      } else if (e.key === 'ArrowLeft') {
+        if (!generationData || !generationData.length) return;
+        e.preventDefault();
+        if (!selectedInterval) {
+          setSelectedInterval(generationData[0]);
+        } else {
+          const idx = generationData.findIndex(
+            (d) => d.startTime === selectedInterval.startTime
+          );
+          if (idx > 0) {
+            setSelectedInterval(generationData[idx - 1]);
+          }
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [selectedInterval, generationData]);
 
   useEffect(() => {
     loadData();
@@ -65,6 +94,42 @@ export default function App() {
   const handleCutoffChange = (newCutoff) => {
     setCutoffTime(newCutoff);
     setSelectedInterval(null);
+  };
+
+  // Quick jump directly to historic January 2026 market anomaly events
+  const handleSelectEvent = (eventKey) => {
+    if (eventKey === 'jan12') {
+      // Jan 12 Peak Shortfall (+7,097 MW at SP 3, 01:00 UTC)
+      setStartDate('2026-01-08');
+      setEndDate('2026-01-14');
+      setTimeout(() => {
+        const item = generationData.find(
+          (d) => d.startTime && d.startTime.startsWith('2026-01-12T01:00:00')
+        );
+        if (item) setSelectedInterval(item);
+      }, 200);
+    } else if (eventKey === 'jan8') {
+      // Jan 8 Surge Spill (-3,312 MW at SP 38, 18:30 UTC)
+      setStartDate('2026-01-08');
+      setEndDate('2026-01-14');
+      setTimeout(() => {
+        const item = generationData.find(
+          (d) => d.startTime && d.startTime.startsWith('2026-01-08T18:30:00')
+        );
+        if (item) setSelectedInterval(item);
+      }, 200);
+    } else if (eventKey === 'jan26') {
+      // Jan 26 Front Gap (+4,133 MW at SP 35, 17:00 UTC)
+      setStartDate('2026-01-25');
+      setEndDate('2026-01-31');
+      setTimeout(() => {
+        const item = generationData.find(
+          (d) => d.startTime && d.startTime.startsWith('2026-01-26T17:00:00')
+        );
+        if (item) setSelectedInterval(item);
+      }, 200);
+    }
+    window.scrollTo({ top: 120, behavior: 'smooth' });
   };
 
   const handleOpenMethodology = () => {
@@ -115,6 +180,8 @@ export default function App() {
             selectedInterval={selectedInterval}
             onSelectInterval={setSelectedInterval}
             onCloseInspector={() => setSelectedInterval(null)}
+            onSelectEvent={handleSelectEvent}
+            onOpenDiurnal={() => setShowDiurnalModal(true)}
           />
         </section>
 
@@ -164,6 +231,14 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* 7. DIURNAL 48-SP MODAL */}
+      <DiurnalProfileModal
+        isOpen={showDiurnalModal}
+        onClose={() => setShowDiurnalModal(false)}
+        data={generationData}
+        viewMode={viewMode}
+      />
 
     </div>
   );

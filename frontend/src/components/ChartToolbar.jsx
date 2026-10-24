@@ -82,6 +82,8 @@ export default function ChartToolbar({
   showErrorStrip,
   setShowErrorStrip,
   viewMode = 'editorial',
+  onSelectEvent,
+  onOpenDiurnal,
 }) {
   const isDark = viewMode === 'analysis';
 
@@ -429,6 +431,83 @@ export default function ChartToolbar({
 
         </div>
 
+      </div>
+
+      {/* SECONDARY ROW: MARKET EVENT ANOMALY QUICK-JUMPS & DIURNAL DRAWER */}
+      <div
+        className={`pt-2 mt-1 border-t flex flex-wrap items-center justify-between gap-2.5 text-[11px] font-mono ${
+          isDark ? 'border-[#1F3E33]' : 'border-rule/60'
+        }`}
+      >
+        {/* Quick-Jump Event Badges */}
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <span className={`text-[10px] uppercase tracking-wider font-semibold mr-0.5 ${isDark ? 'text-sage' : 'text-muted'}`}>
+            Market Events:
+          </span>
+
+          {/* Event 1: Jan 12 Peak Shortfall */}
+          <button
+            type="button"
+            onClick={() => onSelectEvent && onSelectEvent('jan12')}
+            className={`px-2 py-0.5 rounded-[3px] border transition cursor-pointer active:scale-[0.97] ${
+              isDark
+                ? 'bg-[#0E201A] border-[#F97316]/50 text-[#F97316] hover:bg-[#F97316]/20'
+                : 'bg-copper/5 border-copper/40 text-copper hover:bg-copper/15'
+            }`}
+            title="Jump to Jan 12 01:00 UTC: Peak shortfall (+7,097 MW)"
+          >
+            ⚡ Jan 12 Shortfall (+7.1k MW)
+          </button>
+
+          {/* Event 2: Jan 8 Surge Spill */}
+          <button
+            type="button"
+            onClick={() => onSelectEvent && onSelectEvent('jan8')}
+            className={`px-2 py-0.5 rounded-[3px] border transition cursor-pointer active:scale-[0.97] ${
+              isDark
+                ? 'bg-[#0E201A] border-[#3DD598]/50 text-[#3DD598] hover:bg-[#3DD598]/20'
+                : 'bg-forest/5 border-forest/40 text-forest hover:bg-forest/15'
+            }`}
+            title="Jump to Jan 8 18:30 UTC: Peak uncontracted spill (-3,312 MW)"
+          >
+            🌊 Jan 8 Spill (-3.3k MW)
+          </button>
+
+          {/* Event 3: Jan 26 Front Gap */}
+          <button
+            type="button"
+            onClick={() => onSelectEvent && onSelectEvent('jan26')}
+            className={`px-2 py-0.5 rounded-[3px] border transition cursor-pointer active:scale-[0.97] ${
+              isDark
+                ? 'bg-[#0E201A] border-[#2A5244] text-paper/80 hover:border-paper hover:text-paper'
+                : 'bg-paper-pure border-rule text-ink/80 hover:border-ink hover:text-ink'
+            }`}
+            title="Jump to Jan 26 17:00 UTC: Sustained evening gap (+4,133 MW)"
+          >
+            🌬️ Jan 26 Atlantic Front (+4.1k MW)
+          </button>
+        </div>
+
+        {/* Diurnal Curve & Insights Trigger */}
+        <div className="flex items-center space-x-2">
+          {onOpenDiurnal && (
+            <button
+              type="button"
+              onClick={onOpenDiurnal}
+              className={`flex items-center space-x-1.5 px-2.5 py-0.5 rounded-[3px] border font-mono transition cursor-pointer active:scale-[0.97] ${
+                isDark
+                  ? 'bg-forest-dark border-forest-bright/60 text-forest-bright hover:bg-forest'
+                  : 'bg-paper-pure border-ink/40 text-ink hover:border-forest hover:text-forest'
+              }`}
+            >
+              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              <span>48-SP Diurnal Curve</span>
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

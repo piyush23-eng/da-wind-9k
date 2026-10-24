@@ -164,7 +164,9 @@ export default function GenerationChart({
   viewMode = 'editorial',
   selectedInterval = null,
   onSelectInterval,
-  onCloseInspector
+  onCloseInspector,
+  onSelectEvent,
+  onOpenDiurnal,
 }) {
   const [showActual, setShowActual] = useState(true);
   const [showForecast, setShowForecast] = useState(true);
@@ -228,6 +230,8 @@ export default function GenerationChart({
         showErrorStrip={showErrorStrip}
         setShowErrorStrip={setShowErrorStrip}
         viewMode={viewMode}
+        onSelectEvent={onSelectEvent}
+        onOpenDiurnal={onOpenDiurnal}
       />
 
       {/* 2. Main Generation Canvas (The Centerpiece) */}
@@ -583,6 +587,20 @@ export default function GenerationChart({
                 Cutoff: {selectedInterval.decisionCutoffTime?.replace('T', ' ').replace('Z', '')}
               </div>
             </div>
+          </div>
+
+          {/* Keyboard Navigation Tip */}
+          <div
+            className={`mt-3 pt-2 border-t flex flex-wrap items-center justify-between text-[11px] font-mono ${
+              isDark ? 'border-[#2A5244] text-sage' : 'border-rule text-muted'
+            }`}
+          >
+            <span>
+              Trader navigation: Use <strong className={isDark ? 'text-forest-bright' : 'text-ink'}>[←]</strong> and <strong className={isDark ? 'text-forest-bright' : 'text-ink'}>[→]</strong> keys to step through settlement periods.
+            </span>
+            <span className="text-[10px]">
+              Press <strong className={isDark ? 'text-paper' : 'text-ink'}>[ESC]</strong> to dismiss
+            </span>
           </div>
         </div>
       )}

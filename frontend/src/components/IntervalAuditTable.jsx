@@ -288,14 +288,39 @@ export default function IntervalAuditTable({
                     <td className="py-2 px-3 text-muted text-[11px]">
                       {iv.forecastPublishTime ? iv.forecastPublishTime.replace('T', ' ').replace('Z', '') : '—'}
                     </td>
-                    <td
-                      className={`py-2 px-3 text-right font-medium ${
-                        isOver ? 'text-copper' : isUnder ? 'text-forest' : 'text-muted'
-                      }`}
-                    >
-                      {iv.error !== null
-                        ? `${iv.error > 0 ? '+' : ''}${iv.error.toLocaleString()} MW`
-                        : '—'}
+                    <td className="py-2 px-3 text-right">
+                      <div className="flex items-center justify-end space-x-2.5">
+                        {/* Centered Diverging Micro-Bar: Center is 0 MW baseline */}
+                        <div
+                          className="w-14 h-2 bg-rule/50 rounded-2xs relative flex items-center overflow-hidden"
+                          title={`Error: ${iv.error > 0 ? '+' : ''}${iv.error?.toLocaleString()} MW`}
+                        >
+                          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-rule-dark z-10" />
+                          {iv.error !== null && iv.error > 0 && (
+                            <div
+                              className="absolute left-1/2 top-0.5 bottom-0.5 bg-copper rounded-2xs transition-all duration-150"
+                              style={{ width: `${Math.min(50, (iv.error / 7100) * 50)}%` }}
+                            />
+                          )}
+                          {iv.error !== null && iv.error < 0 && (
+                            <div
+                              className="absolute right-1/2 top-0.5 bottom-0.5 bg-forest rounded-2xs transition-all duration-150"
+                              style={{ width: `${Math.min(50, (Math.abs(iv.error) / 7100) * 50)}%` }}
+                            />
+                          )}
+                        </div>
+
+                        {/* Numeric Error Text */}
+                        <span
+                          className={`font-medium tabular-nums ${
+                            isOver ? 'text-copper' : isUnder ? 'text-forest' : 'text-muted'
+                          }`}
+                        >
+                          {iv.error !== null
+                            ? `${iv.error > 0 ? '+' : ''}${iv.error.toLocaleString()} MW`
+                            : '—'}
+                        </span>
+                      </div>
                     </td>
                     <td className="py-2 pl-3 text-center">
                       {iv.isMatched ? (
