@@ -5,7 +5,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18.3+-61DAFB.svg)](https://react.dev)
 [![Docker](https://img.shields.io/badge/Docker-Supported-2496ED.svg)](https://www.docker.com)
-[![Tests](https://img.shields.io/badge/Tests-12%2F12%20Passing-success.svg)](https://docs.pytest.org)
+[![Tests](https://img.shields.io/badge/Tests-14%2F14%20Passing-success.svg)](https://docs.pytest.org)
 
 WindScope is a production-minded web application engineered for UK electricity utilities and wholesale energy trading desks. It quantitatively evaluates national day-ahead wind power generation forecasts against actual delivered generation to inform day-ahead power purchasing decisions in the GB wholesale electricity market.
 
@@ -208,7 +208,7 @@ cd backend
 source venv/bin/activate
 python -m pytest tests/
 ```
-**Result:** `12 passed in 2.79s`
+**Result:** `14 passed in 4.66s`
 
 ---
 

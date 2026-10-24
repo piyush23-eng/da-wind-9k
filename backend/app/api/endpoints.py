@@ -74,14 +74,25 @@ def health_check():
 def get_overview(
     start_date: str = Query("2026-01-01", pattern=r"^\d{4}-\d{2}-\d{2}$", description="Start date YYYY-MM-DD"),
     end_date: str = Query("2026-01-31", pattern=r"^\d{4}-\d{2}-\d{2}$", description="End date YYYY-MM-DD"),
-    cutoff_time: str = Query("17:00:00", pattern=r"^\d{2}:\d{2}:\d{2}$", description="D-1 decision cutoff time (e.g. 12:00:00, 17:00:00)")
+    cutoff_time: str = Query("17:00:00", pattern=r"^\d{2}:\d{2}:\d{2}$", description="D-1 decision cutoff time (e.g. 12:00:00, 17:00:00)"),
+    match_mode: str = Query("hourly_persistence", pattern=r"^(hourly_persistence|exact)$", description="Matching mode: hourly_persistence (48 SPs) or exact (24 SPs)"),
+    cashout_price: float = Query(85.0, ge=0.0, le=1000.0, description="Benchmark cashout price (£/MWh) for imbalance calculation")
 ):
     """Returns high-level KPI cards, accuracy metrics, daily summary, and transparency metadata."""
-    res = get_evaluation_data(start_date=start_date, end_date=end_date, cutoff_time=cutoff_time)
+    res = get_evaluation_data(
+        start_date=start_date,
+        end_date=end_date,
+        cutoff_time=cutoff_time,
+        match_mode=match_mode
+    )
     matched_intervals = res["matched_intervals"]
     audit = res["audit"]
 
-    metrics = compute_accuracy_metrics(matched_intervals, total_target_intervals=audit["totalTargetIntervals"])
+    metrics = compute_accuracy_metrics(
+        matched_intervals,
+        total_target_intervals=audit["totalTargetIntervals"],
+        cashout_price_gbp=cashout_price
+    )
     daily = compute_daily_breakdown(matched_intervals)
 
     # Identify 5 largest absolute errors for immediate review
@@ -98,6 +109,11 @@ def get_overview(
             "cutoffTimeOfDay": cutoff_time,
             "description": f"Forecasts published on Day D-1 on or before {cutoff_time} UTC. Look-ahead bias strictly excluded."
         },
+        "marketAssumptions": {
+            "matchMode": match_mode,
+            "cashoutPriceGbpPerMWh": cashout_price,
+            "notes": "Cashout benchmark configurable; £85/MWh represents winter baseline average."
+        },
         "dataSource": res["data_source"],
         "actualsSource": res["actuals_source"],
         "forecastsSource": res["forecasts_source"],
@@ -112,10 +128,11 @@ def get_overview(
 def get_generation_timeseries(
     start_date: str = Query("2026-01-01", pattern=r"^\d{4}-\d{2}-\d{2}$"),
     end_date: str = Query("2026-01-31", pattern=r"^\d{4}-\d{2}-\d{2}$"),
-    cutoff_time: str = Query("17:00:00", pattern=r"^\d{2}:\d{2}:\d{2}$")
+    cutoff_time: str = Query("17:00:00", pattern=r"^\d{2}:\d{2}:\d{2}$"),
+    match_mode: str = Query("hourly_persistence", pattern=r"^(hourly_persistence|exact)$")
 ):
     """Returns time-series data of actual generation vs day-ahead forecast for charting."""
-    res = get_evaluation_data(start_date=start_date, end_date=end_date, cutoff_time=cutoff_time)
+    res = get_evaluation_data(start_date=start_date, end_date=end_date, cutoff_time=cutoff_time, match_mode=match_mode)
     intervals = res["matched_intervals"]
 
     timeseries = []
@@ -139,6 +156,7 @@ def get_generation_timeseries(
         "startDate": start_date,
         "endDate": end_date,
         "cutoffTime": cutoff_time,
+        "matchMode": match_mode,
         "units": "MW",
         "count": len(timeseries),
         "data": timeseries
@@ -149,14 +167,20 @@ def get_generation_timeseries(
 def get_accuracy_analysis(
     start_date: str = Query("2026-01-01", pattern=r"^\d{4}-\d{2}-\d{2}$"),
     end_date: str = Query("2026-01-31", pattern=r"^\d{4}-\d{2}-\d{2}$"),
-    cutoff_time: str = Query("17:00:00", pattern=r"^\d{2}:\d{2}:\d{2}$")
+    cutoff_time: str = Query("17:00:00", pattern=r"^\d{2}:\d{2}:\d{2}$"),
+    match_mode: str = Query("hourly_persistence", pattern=r"^(hourly_persistence|exact)$"),
+    cashout_price: float = Query(85.0, ge=0.0, le=1000.0)
 ):
     """Returns detailed accuracy metrics, error distribution histogram, and daily breakdowns."""
-    res = get_evaluation_data(start_date=start_date, end_date=end_date, cutoff_time=cutoff_time)
+    res = get_evaluation_data(start_date=start_date, end_date=end_date, cutoff_time=cutoff_time, match_mode=match_mode)
     intervals = res["matched_intervals"]
     audit = res["audit"]
 
-    metrics = compute_accuracy_metrics(intervals, total_target_intervals=audit["totalTargetIntervals"])
+    metrics = compute_accuracy_metrics(
+        intervals,
+        total_target_intervals=audit["totalTargetIntervals"],
+        cashout_price_gbp=cashout_price
+    )
     daily = compute_daily_breakdown(intervals)
     histogram = compute_error_histogram(intervals, num_bins=12)
 
@@ -173,6 +197,7 @@ def get_intervals(
     start_date: str = Query("2026-01-01", pattern=r"^\d{4}-\d{2}-\d{2}$"),
     end_date: str = Query("2026-01-31", pattern=r"^\d{4}-\d{2}-\d{2}$"),
     cutoff_time: str = Query("17:00:00", pattern=r"^\d{2}:\d{2}:\d{2}$"),
+    match_mode: str = Query("hourly_persistence", pattern=r"^(hourly_persistence|exact)$"),
     matched_only: bool = Query(False, description="Filter to matched intervals only"),
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=10, le=500),
@@ -180,7 +205,7 @@ def get_intervals(
     sort_order: str = Query("asc", description="Sort order: asc or desc")
 ):
     """Returns paginated 30-minute interval table with sorting and filtering."""
-    res = get_evaluation_data(start_date=start_date, end_date=end_date, cutoff_time=cutoff_time)
+    res = get_evaluation_data(start_date=start_date, end_date=end_date, cutoff_time=cutoff_time, match_mode=match_mode)
     intervals = res["matched_intervals"]
 
     if matched_only:

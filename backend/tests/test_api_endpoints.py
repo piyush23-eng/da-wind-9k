@@ -60,3 +60,27 @@ def test_generation_timeseries_metadata():
     assert "absoluteError" in first_item
     assert "percentageError" in first_item
 
+
+def test_configurable_cashout_price():
+    """Verify that custom cashout price scales imbalance exposure dynamically."""
+    res_default = client.get("/api/overview?start_date=2026-01-01&end_date=2026-01-02&cashout_price=85.0")
+    res_custom = client.get("/api/overview?start_date=2026-01-01&end_date=2026-01-02&cashout_price=150.0")
+    assert res_default.status_code == 200
+    assert res_custom.status_code == 200
+    m_default = res_default.json()["metrics"]
+    m_custom = res_custom.json()["metrics"]
+    assert m_default["cashoutBenchmarkGbpPerMWh"] == 85.0
+    assert m_custom["cashoutBenchmarkGbpPerMWh"] == 150.0
+    assert m_custom["estimatedImbalanceExposureGbp"] > m_default["estimatedImbalanceExposureGbp"]
+
+
+def test_match_mode_exact_vs_persistence():
+    """Verify that exact mode matches 24 SPs/day while persistence matches 48 SPs/day."""
+    res_persist = client.get("/api/overview?start_date=2026-01-01&end_date=2026-01-01&match_mode=hourly_persistence")
+    res_exact = client.get("/api/overview?start_date=2026-01-01&end_date=2026-01-01&match_mode=exact")
+    assert res_persist.status_code == 200
+    assert res_exact.status_code == 200
+    assert res_persist.json()["metrics"]["matchedCount"] == 48
+    assert res_exact.json()["metrics"]["matchedCount"] == 24
+
+

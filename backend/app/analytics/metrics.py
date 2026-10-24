@@ -22,7 +22,8 @@ import pandas as pd
 
 def compute_accuracy_metrics(
     matched_intervals: List[Dict[str, Any]],
-    total_target_intervals: Optional[int] = None
+    total_target_intervals: Optional[int] = None,
+    cashout_price_gbp: float = 85.0
 ) -> Dict[str, Any]:
     """Calculate MAE, RMSE, Mean Bias, Over/Under-forecast distributions."""
     matched = [iv for iv in matched_intervals if iv.get("isMatched") and iv.get("error") is not None]
@@ -53,6 +54,7 @@ def compute_accuracy_metrics(
             "estimatedImbalanceExposureGbp": 0.0,
             "debiasedMae": 0.0,
             "potentialSavingsGbp": 0.0,
+            "cashoutBenchmarkGbpPerMWh": cashout_price_gbp,
             "units": "MW",
         }
 
@@ -76,13 +78,13 @@ def compute_accuracy_metrics(
     # Physical imbalance volume: sum(|error| * 0.5 hours)
     imbalance_mwh = round(float(np.sum(abs_errors) * 0.5), 1)
 
-    # GB wholesale market baseline cashout settlement estimate (£85/MWh average imbalance penalty)
-    estimated_imbalance_gbp = round(imbalance_mwh * 85.0, 2)
+    # GB wholesale market baseline cashout settlement estimate (configurable benchmark penalty)
+    estimated_imbalance_gbp = round(imbalance_mwh * cashout_price_gbp, 2)
 
     # De-biased simulation: potential performance if systematic bias is removed at auction time
     debiased_errors = errors - mean_error
     debiased_mae = round(float(np.mean(np.abs(debiased_errors))), 2)
-    potential_savings_gbp = round(max(0.0, float((mae - debiased_mae) * matched_count * 0.5 * 85.0)), 2)
+    potential_savings_gbp = round(max(0.0, float((mae - debiased_mae) * matched_count * 0.5 * cashout_price_gbp)), 2)
 
     return {
         "mae": round(mae, 2),
@@ -99,6 +101,7 @@ def compute_accuracy_metrics(
         "maxUnderforecast": round(max_underforecast, 2),
         "rmseRatio": rmse_ratio,
         "imbalanceMWh": imbalance_mwh,
+        "cashoutBenchmarkGbpPerMWh": cashout_price_gbp,
         "estimatedImbalanceExposureGbp": estimated_imbalance_gbp,
         "debiasedMae": debiased_mae,
         "potentialSavingsGbp": potential_savings_gbp,

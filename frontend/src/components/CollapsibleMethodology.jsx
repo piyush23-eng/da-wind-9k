@@ -78,6 +78,29 @@ export default function CollapsibleMethodology({ isOpenDefault = false, audit = 
             </p>
           </div>
 
+          {/* Note 4 */}
+          <div>
+            <h4 className="font-mono text-[11px] uppercase tracking-wider text-muted font-semibold mb-1.5">
+              04 / Dataset Resolution & Hourly Persistence Matching
+            </h4>
+            <p className="text-muted leading-relaxed">
+              <code className="font-mono text-ink bg-paper-tint px-1 py-0.5">FUELHH</code> outturns are recorded half-hourly (48 settlement periods/day), whereas National Grid <code className="font-mono text-ink bg-paper-tint px-1 py-0.5">WINDFOR</code> forecasts are published at hourly resolution (24 intervals/day). 
+              In GB power operations, the hourly forecast schedules both 30-minute settlement periods within that hour (<code className="font-mono text-ink">:00</code> and <code className="font-mono text-ink">:30</code>). 
+              WindScope uses <code className="font-mono text-forest bg-paper-tint px-1 py-0.5">hourly_persistence</code> matching by default (99.93% coverage across January 2026), with an optional <code className="font-mono text-ink bg-paper-tint px-1 py-0.5">exact</code> top-of-hour mode (50% coverage).
+            </p>
+          </div>
+
+          {/* Note 5 */}
+          <div>
+            <h4 className="font-mono text-[11px] uppercase tracking-wider text-muted font-semibold mb-1.5">
+              05 / Imbalance Cashout Benchmark (£85/MWh Baseline)
+            </h4>
+            <p className="text-muted leading-relaxed">
+              Cashout exposure is calculated as <code className="font-mono text-ink">Gross Imbalance Volume (MWh) × Cashout Price</code>. 
+              Because the challenge scope is strictly limited to <code className="font-mono text-ink">FUELHH</code> and <code className="font-mono text-ink">WINDFOR</code> streams, an empirical baseline of <strong>£85/MWh</strong> (average winter UK system cashout price) is modeled. The API supports a configurable <code className="font-mono text-ink">cashout_price</code> parameter to run scenario stress tests (£50–£200/MWh).
+            </p>
+          </div>
+
         </div>
       )}
     </section>
