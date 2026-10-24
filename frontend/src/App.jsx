@@ -216,13 +216,13 @@ export default function App() {
 
       </main>
 
-      {/* 6. EDITORIAL FOOTER */}
+      {/* 6. SYSTEM FOOTER */}
       <footer className="py-12 border-t border-rule mt-12 bg-paper text-xs text-muted font-mono">
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-baseline justify-between gap-4">
           <div className="space-y-1">
-            <div className="font-bold tracking-widest text-ink">WINDSCOPE / FIELD NOTES ON WIND</div>
+            <div className="font-bold tracking-widest text-ink">WINDSCOPE · ELEXON BMRS EVALUATION ENGINE</div>
             <div className="text-[11px] font-sans">
-              Independent quantitative analysis of British wholesale electricity markets.
+              UK wholesale electricity day-ahead procurement evaluation system.
             </div>
           </div>
           <div className="flex items-center space-x-4 text-[11px]">

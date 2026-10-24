@@ -16,7 +16,7 @@ export default function Header({
               WINDSCOPE
             </span>
             <span className="text-muted text-[11px] hidden sm:inline font-sans">
-              / The Shape of Uncertainty
+              / UK Day-Ahead Wind Forecast Evaluation
             </span>
           </div>
 
@@ -41,7 +41,7 @@ export default function Header({
                     : 'text-[#1C2922]/70 hover:text-[#1C2922] font-medium'
                 }`}
               >
-                Editorial
+                Overview
               </button>
               <button
                 type="button"
@@ -58,7 +58,7 @@ export default function Header({
 
             <span className="hidden md:inline text-rule">|</span>
 
-            <span className="hidden md:inline">January 2026 · Great Britain</span>
+            <span className="hidden md:inline">January 2026 · Elexon BMRS</span>
 
             <button
               onClick={onOpenMethodology}
@@ -69,9 +69,9 @@ export default function Header({
           </div>
         </nav>
 
-        {/* Smooth Transitioning Hero Header Area */}
+        {/* Transitioning Header Area */}
         <div className="relative mt-6 mb-1 min-h-[75px] sm:min-h-[85px]">
-          {/* Editorial Headline */}
+          {/* Overview Headline */}
           <div
             className={`transition-all duration-300 ease-in-out ${
               viewMode === 'editorial'
@@ -80,14 +80,14 @@ export default function Header({
             }`}
           >
             <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal tracking-tight text-ink leading-[1.1]">
-              Wind is variable. Forecast error is measurable.
+              Day-Ahead Wind Forecast Evaluation
             </h1>
             <p className="mt-2 text-xs sm:text-sm text-muted font-sans max-w-2xl leading-relaxed">
-              An empirical audit of Great Britain’s national day-ahead wind forecasts against realised physical generation across January 2026.
+              Evaluating Elexon WINDFOR forecasts against FUELHH actual generation for wholesale power procurement across January 2026.
             </p>
           </div>
 
-          {/* Analysis Workstation Headline */}
+          {/* Analysis Headline */}
           <div
             className={`transition-all duration-300 ease-in-out ${
               viewMode === 'analysis'
@@ -97,17 +97,17 @@ export default function Header({
           >
             <div className="flex flex-wrap items-center gap-2 mb-1.5">
               <span className="px-2 py-0.5 rounded-[3px] bg-forest/10 border border-forest/40 text-forest font-mono text-[10px] font-bold uppercase tracking-wider">
-                Workstation Mode
+                Detailed View
               </span>
               <span className="font-mono text-xs text-muted">
-                D-1 Procurement Auction Evaluation
+                D-1 Auction Gate Evaluation
               </span>
             </div>
             <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal tracking-tight text-ink leading-[1.1]">
-              Quantitative Risk & Volatility Workstation
+              Settlement Period & Imbalance Analysis
             </h1>
             <p className="mt-1.5 text-xs sm:text-sm text-muted font-sans max-w-2xl leading-relaxed">
-              High-density settlement ledger, statistical error distributions, and peak imbalance risk telemetry.
+              Half-hourly settlement ledger, error distributions, and cashout exposure under D-1 decision cutoffs.
             </p>
           </div>
         </div>

@@ -234,7 +234,7 @@ export default function GenerationChart({
               }`}
             />
             <span className={isDark ? 'text-sage' : 'text-muted'}>
-              Evaluating Elexon stream observations...
+              Loading settlement records from Elexon...
             </span>
           </div>
         ) : !processedData.length ? (
@@ -586,7 +586,7 @@ export default function GenerationChart({
             }`}
           >
             <span>
-              Trader navigation: Use <strong className={isDark ? 'text-forest-bright' : 'text-ink'}>[←]</strong> and <strong className={isDark ? 'text-forest-bright' : 'text-ink'}>[→]</strong> keys to step through settlement periods.
+              Keyboard navigation: Use <strong className={isDark ? 'text-forest-bright' : 'text-ink'}>[←]</strong> and <strong className={isDark ? 'text-forest-bright' : 'text-ink'}>[→]</strong> keys to step through settlement periods.
             </span>
             <span className="text-[10px]">
               Press <strong className={isDark ? 'text-paper' : 'text-ink'}>[ESC]</strong> to dismiss

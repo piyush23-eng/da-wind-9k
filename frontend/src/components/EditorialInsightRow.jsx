@@ -36,7 +36,7 @@ export default function EditorialInsightRow({ metrics, viewMode = 'editorial' })
         {/* Figure 1: MAE */}
         <div className={`py-2 sm:py-0 transition-all duration-300 ${isAnalysis ? 'sm:px-4 first:sm:pl-0' : 'md:pr-8'}`}>
           <div className="text-[11px] font-mono uppercase tracking-wider text-muted font-bold">
-            01 / Mean Absolute Error
+            01 / Mean Absolute Error (MAE)
           </div>
           <div className="mt-2 flex items-baseline space-x-2">
             <span className="font-mono text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-ink">
@@ -45,7 +45,7 @@ export default function EditorialInsightRow({ metrics, viewMode = 'editorial' })
             <span className="font-mono text-xs text-muted">{units}</span>
           </div>
           <p className="mt-2 text-xs text-muted leading-relaxed font-sans max-w-xs">
-            Average absolute volume divergence between day-ahead contracts and physical delivery.
+            Mean absolute difference between day-ahead forecast and delivered wind.
           </p>
         </div>
 
@@ -53,7 +53,7 @@ export default function EditorialInsightRow({ metrics, viewMode = 'editorial' })
         {isAnalysis && (
           <div className="py-2 sm:py-0 sm:px-4 transition-all duration-300 animate-fadeIn">
             <div className="text-[11px] font-mono uppercase tracking-wider text-forest font-bold">
-              02 / RMSE Volatility Penalty
+              02 / Root Mean Squared Error (RMSE)
             </div>
             <div className="mt-2 flex items-baseline space-x-2">
               <span className="font-mono text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-ink">
@@ -62,7 +62,7 @@ export default function EditorialInsightRow({ metrics, viewMode = 'editorial' })
               <span className="font-mono text-xs text-muted">{units}</span>
             </div>
             <p className="mt-2 text-xs text-muted leading-relaxed font-sans max-w-xs">
-              Quadratic penalty measuring exposure to tail risks ({rmseRatio}× MAE dispersion).
+              Quadratic penalty capturing peak ramp deviations ({rmseRatio}× MAE ratio).
             </p>
           </div>
         )}
@@ -70,7 +70,7 @@ export default function EditorialInsightRow({ metrics, viewMode = 'editorial' })
         {/* Figure 3: Mean Bias */}
         <div className={`py-2 sm:py-0 transition-all duration-300 ${isAnalysis ? 'sm:px-4' : 'md:px-8'}`}>
           <div className="text-[11px] font-mono uppercase tracking-wider text-muted font-bold">
-            {isAnalysis ? '03 / Systematic Directional Bias' : '02 / Systematic Forecast Bias'}
+            {isAnalysis ? '03 / Mean Forecast Error (Bias)' : '02 / Mean Forecast Error (Bias)'}
           </div>
           <div className="mt-2 flex items-baseline space-x-2">
             <span
@@ -83,14 +83,14 @@ export default function EditorialInsightRow({ metrics, viewMode = 'editorial' })
             <span className="font-mono text-xs text-muted">{units}</span>
           </div>
           <p className="mt-2 text-xs text-muted leading-relaxed font-sans max-w-xs">
-            Directional skew. Positive numbers confirm a persistent tendency to overpredict wind availability.
+            Systematic directional bias. Positive values indicate overpredicted wind.
           </p>
         </div>
 
         {/* Figure 4: Coverage */}
         <div className={`py-2 sm:py-0 transition-all duration-300 ${isAnalysis ? 'sm:px-4 last:sm:pr-0' : 'md:pl-8'}`}>
           <div className="text-[11px] font-mono uppercase tracking-wider text-muted font-bold">
-            {isAnalysis ? '04 / Decision Gate Coverage' : '03 / Decision Gate Coverage'}
+            {isAnalysis ? '04 / Forecast Coverage' : '03 / Forecast Coverage'}
           </div>
           <div className="mt-2 flex items-baseline space-x-2">
             <span className="font-mono text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight text-ink">
@@ -101,20 +101,20 @@ export default function EditorialInsightRow({ metrics, viewMode = 'editorial' })
             </span>
           </div>
           <p className="mt-2 text-xs text-muted leading-relaxed font-sans max-w-xs">
-            Half-hour settlement periods matched with deterministic forecasts published on or before the cutoff.
+            Settlement periods matched with forecasts published prior to decision cutoff.
           </p>
         </div>
 
       </div>
 
-      {/* Analytical Takeaway Derived from Calculations */}
+      {/* Summary Row */}
       {matchedCount > 0 && (
         <div className="mt-7 pt-5 border-t border-rule/70 text-sm sm:text-base text-ink font-sans leading-relaxed transition-all duration-300">
           <div className="flex flex-col lg:flex-row lg:items-baseline justify-between gap-4">
             <div className="max-w-3xl">
-              <span className="font-mono text-xs text-muted uppercase tracking-wider mr-2 font-bold">Analytical Finding:</span>
+              <span className="font-mono text-xs text-muted uppercase tracking-wider mr-2 font-bold">Summary:</span>
               Across January 2026, day-ahead forecasts overpredicted realised wind generation in{' '}
-              <strong className="font-medium text-copper">{overPct}% of all settlement periods</strong> ({overforecastCount.toLocaleString()} intervals), creating a systematic shortfall bias of{' '}
+              <strong className="font-medium text-copper">{overPct}% of settlement periods</strong> ({overforecastCount.toLocaleString()} intervals), with an average positive bias of{' '}
               <strong className="font-medium text-copper">+{Math.round(meanError).toLocaleString()} MW</strong> at decision cutoff.
             </div>
             {isAnalysis && metrics.estimatedImbalanceExposureGbp && (

@@ -113,7 +113,7 @@ export default function IntervalAuditTable({
       {metrics && (
         <div className="mb-6 pb-6 border-b border-rule/60 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono">
           <div>
-            <span className="text-muted text-[11px] font-sans">RMSE Volatility Penalty:</span>
+            <span className="text-muted text-[11px] font-sans">RMSE Volatility:</span>
             <div className="font-bold text-ink text-base mt-0.5">
               {Math.round(metrics.rmse || 0).toLocaleString()} MW
             </div>
@@ -123,22 +123,22 @@ export default function IntervalAuditTable({
           </div>
 
           <div>
-            <span className="text-muted text-[11px] font-sans">Peak Overforecast Shortfall:</span>
+            <span className="text-muted text-[11px] font-sans">Max Overforecast:</span>
             <div className="font-bold text-copper text-base mt-0.5">
               +{Math.round(metrics.maxOverforecast || 0).toLocaleString()} MW
             </div>
             <div className="text-[10px] text-muted font-sans mt-0.5">
-              Acute market exposure
+              Largest shortfall volume
             </div>
           </div>
 
           <div>
-            <span className="text-muted text-[11px] font-sans">Peak Underforecast Ramp:</span>
+            <span className="text-muted text-[11px] font-sans">Max Underforecast:</span>
             <div className="font-bold text-forest text-base mt-0.5">
               {Math.round(metrics.maxUnderforecast || 0).toLocaleString()} MW
             </div>
             <div className="text-[10px] text-muted font-sans mt-0.5">
-              Rapid weather front arrival
+              Largest uncontracted spill
             </div>
           </div>
 
