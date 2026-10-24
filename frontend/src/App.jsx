@@ -189,6 +189,7 @@ export default function App() {
         <EditorialInsightRow
           metrics={overview?.metrics}
           audit={overview?.audit}
+          viewMode={viewMode}
         />
 
         {/* 5. BELOW-THE-FOLD ANALYTICAL DEPTH */}
