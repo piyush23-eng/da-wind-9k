@@ -61,6 +61,11 @@ class AccuracyMetrics(BaseModel):
     exactMatchCount: int = Field(..., description="Count of intervals where Forecast == Actual")
     maxOverforecast: Optional[float] = Field(None, description="Largest positive error (Forecast - Actual)")
     maxUnderforecast: Optional[float] = Field(None, description="Largest negative error (Forecast - Actual)")
+    rmseRatio: Optional[float] = Field(None, description="RMSE to MAE dispersion ratio (>1.2 indicates heavy tail volatility)")
+    imbalanceMWh: Optional[float] = Field(None, description="Total gross physical imbalance volume in MWh (sum(|error| * 0.5h))")
+    estimatedImbalanceExposureGbp: Optional[float] = Field(None, description="Estimated total imbalance cashout cost exposure at £85/MWh baseline")
+    debiasedMae: Optional[float] = Field(None, description="Hypothetical MAE achievable after removing systematic mean bias")
+    potentialSavingsGbp: Optional[float] = Field(None, description="Estimated commercial savings in cashout penalties from systematic de-biasing")
     units: str = Field("MW", description="Generation power units reported by Elexon BMRS")
 
 

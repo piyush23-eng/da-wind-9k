@@ -109,11 +109,32 @@ export default function EditorialInsightRow({ metrics, viewMode = 'editorial' })
 
       {/* Analytical Takeaway Derived from Calculations */}
       {matchedCount > 0 && (
-        <div className="mt-7 pt-5 border-t border-rule/70 text-sm sm:text-base text-ink font-sans leading-relaxed max-w-4xl transition-all duration-300">
-          <span className="font-mono text-xs text-muted uppercase tracking-wider mr-2 font-bold">Analytical Finding:</span>
-          Across January 2026, day-ahead forecasts overpredicted realised wind generation in{' '}
-          <strong className="font-medium text-copper">{overPct}% of all settlement periods</strong> ({overforecastCount.toLocaleString()} intervals), creating a systematic shortfall bias of{' '}
-          <strong className="font-medium text-copper">+{Math.round(meanError).toLocaleString()} MW</strong> at decision cutoff.
+        <div className="mt-7 pt-5 border-t border-rule/70 text-sm sm:text-base text-ink font-sans leading-relaxed transition-all duration-300">
+          <div className="flex flex-col lg:flex-row lg:items-baseline justify-between gap-4">
+            <div className="max-w-3xl">
+              <span className="font-mono text-xs text-muted uppercase tracking-wider mr-2 font-bold">Analytical Finding:</span>
+              Across January 2026, day-ahead forecasts overpredicted realised wind generation in{' '}
+              <strong className="font-medium text-copper">{overPct}% of all settlement periods</strong> ({overforecastCount.toLocaleString()} intervals), creating a systematic shortfall bias of{' '}
+              <strong className="font-medium text-copper">+{Math.round(meanError).toLocaleString()} MW</strong> at decision cutoff.
+            </div>
+            {isAnalysis && metrics.estimatedImbalanceExposureGbp && (
+              <div className="shrink-0 flex items-center space-x-3 text-xs font-mono bg-white border border-rule px-3.5 py-2 rounded-[4px] shadow-2xs self-start lg:self-auto">
+                <div>
+                  <span className="text-muted block text-[10px] uppercase">Cashout Exposure</span>
+                  <strong className="text-copper font-bold text-sm">
+                    £{(metrics.estimatedImbalanceExposureGbp / 1e6).toFixed(1)}M
+                  </strong>
+                </div>
+                <span className="text-rule text-base">|</span>
+                <div>
+                  <span className="text-muted block text-[10px] uppercase">De-biasing Savings</span>
+                  <strong className="text-forest font-bold text-sm">
+                    £{(metrics.potentialSavingsGbp / 1e6).toFixed(1)}M
+                  </strong>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

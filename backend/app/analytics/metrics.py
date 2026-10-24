@@ -65,6 +65,20 @@ def compute_accuracy_metrics(
     max_overforecast = float(np.max(errors)) if overforecast_count > 0 else 0.0
     max_underforecast = float(np.min(errors)) if underforecast_count > 0 else 0.0
 
+    # Dispersion volatility penalty: RMSE/MAE ratio (>1.2 indicates heavy-tailed spikes)
+    rmse_ratio = round(rmse / mae, 2) if mae > 0 else 1.0
+
+    # Physical imbalance volume: sum(|error| * 0.5 hours)
+    imbalance_mwh = round(float(np.sum(abs_errors) * 0.5), 1)
+
+    # GB wholesale market baseline cashout settlement estimate (£85/MWh average imbalance penalty)
+    estimated_imbalance_gbp = round(imbalance_mwh * 85.0, 2)
+
+    # De-biased simulation: potential performance if systematic bias is removed at auction time
+    debiased_errors = errors - mean_error
+    debiased_mae = round(float(np.mean(np.abs(debiased_errors))), 2)
+    potential_savings_gbp = round(max(0.0, float((mae - debiased_mae) * matched_count * 0.5 * 85.0)), 2)
+
     return {
         "mae": round(mae, 2),
         "rmse": round(rmse, 2),
@@ -78,6 +92,11 @@ def compute_accuracy_metrics(
         "exactMatchCount": exact_count,
         "maxOverforecast": round(max_overforecast, 2),
         "maxUnderforecast": round(max_underforecast, 2),
+        "rmseRatio": rmse_ratio,
+        "imbalanceMWh": imbalance_mwh,
+        "estimatedImbalanceExposureGbp": estimated_imbalance_gbp,
+        "debiasedMae": debiased_mae,
+        "potentialSavingsGbp": potential_savings_gbp,
         "units": "MW",
     }
 

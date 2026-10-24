@@ -9,31 +9,34 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || (
     : '/api'
 );
 
-export async function fetchOverview(startDate = '2026-01-01', endDate = '2026-01-31', cutoffTime = '17:00:00') {
-  const url = `${API_BASE_URL}/overview?start_date=${startDate}&end_date=${endDate}&cutoff_time=${cutoffTime}`;
+const cache = new Map();
+
+async function cachedGet(url) {
+  if (cache.has(url)) {
+    return cache.get(url);
+  }
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(`Failed to fetch overview: ${response.status} ${response.statusText}`);
+    throw new Error(`API error: ${response.status} ${response.statusText}`);
   }
-  return response.json();
+  const data = await response.json();
+  cache.set(url, data);
+  return data;
+}
+
+export async function fetchOverview(startDate = '2026-01-01', endDate = '2026-01-31', cutoffTime = '17:00:00') {
+  const url = `${API_BASE_URL}/overview?start_date=${startDate}&end_date=${endDate}&cutoff_time=${cutoffTime}`;
+  return cachedGet(url);
 }
 
 export async function fetchGenerationTimeseries(startDate = '2026-01-01', endDate = '2026-01-31', cutoffTime = '17:00:00') {
   const url = `${API_BASE_URL}/generation?start_date=${startDate}&end_date=${endDate}&cutoff_time=${cutoffTime}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch generation data: ${response.status} ${response.statusText}`);
-  }
-  return response.json();
+  return cachedGet(url);
 }
 
 export async function fetchAccuracy(startDate = '2026-01-01', endDate = '2026-01-31', cutoffTime = '17:00:00') {
   const url = `${API_BASE_URL}/accuracy?start_date=${startDate}&end_date=${endDate}&cutoff_time=${cutoffTime}`;
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch accuracy data: ${response.status} ${response.statusText}`);
-  }
-  return response.json();
+  return cachedGet(url);
 }
 
 export async function fetchIntervals(params = {}) {

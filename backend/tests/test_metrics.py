@@ -48,6 +48,13 @@ def test_hand_calculated_accuracy_metrics():
     assert metrics["maxOverforecast"] == 200.0
     assert metrics["maxUnderforecast"] == -100.0
 
+    # Financial & Volatility Metrics
+    assert metrics["rmseRatio"] == 1.04
+    assert metrics["imbalanceMWh"] == 225.0
+    assert metrics["estimatedImbalanceExposureGbp"] == 19125.0
+    assert metrics["debiasedMae"] is not None
+    assert metrics["potentialSavingsGbp"] is not None
+
 
 def test_empty_or_all_unmatched_metrics():
     """Verify graceful handling when no matched records exist."""
