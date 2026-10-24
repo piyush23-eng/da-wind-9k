@@ -263,18 +263,25 @@ export default function App() {
       </main>
 
       {/* 6. SYSTEM FOOTER */}
-      <footer className="py-12 border-t border-rule mt-12 bg-paper text-xs text-muted font-mono">
-        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-baseline justify-between gap-4">
+      <footer className="py-10 border-t border-rule mt-12 bg-paper text-xs text-muted font-mono">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-start md:items-baseline justify-between gap-4">
           <div className="space-y-1">
-            <div className="font-bold tracking-widest text-ink">WINDSCOPE · ELEXON BMRS EVALUATION ENGINE</div>
-            <div className="text-[11px] font-sans">
-              UK wholesale electricity day-ahead procurement evaluation system.
+            <div className="font-bold tracking-wider text-ink text-xs">
+              WINDSCOPE · GB POWER PROCUREMENT INTELLIGENCE
+            </div>
+            <div className="text-[11px] font-sans text-muted max-w-md leading-relaxed">
+              Deterministic day-ahead forecast verification and balancing mechanism cashout exposure analytics for UK utility power trading desks.
             </div>
           </div>
-          <div className="flex items-center space-x-4 text-[11px]">
-            <span>Elexon BMRS Stream</span>
-            <span className="text-rule">/</span>
-            <span>All times UTC (GMT)</span>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
+            <span className="inline-flex items-center space-x-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-forest inline-block" />
+              <span>Elexon BMRS (FUELHH · WINDFOR)</span>
+            </span>
+            <span className="text-rule hidden sm:inline">/</span>
+            <span>30-Min Settlement Periods (SPs 1–48)</span>
+            <span className="text-rule hidden sm:inline">/</span>
+            <span>All timestamps UTC</span>
           </div>
         </div>
       </footer>
