@@ -133,9 +133,12 @@ export default function App() {
   };
 
   const handleOpenMethodology = () => {
+    setViewMode('analysis');
     setShowMethodology(true);
-    const el = document.getElementById('methodology');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(() => {
+      const el = document.getElementById('methodology');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   return (

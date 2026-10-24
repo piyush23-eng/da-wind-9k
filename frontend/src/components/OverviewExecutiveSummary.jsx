@@ -14,6 +14,17 @@ export default function OverviewExecutiveSummary({
     ? Math.round((metrics.overforecastCount / metrics.matchedCount) * 1000) / 10
     : 87.7;
 
+  const maeVal = metrics?.mae ? Math.round(metrics.mae).toLocaleString() : '1,985';
+  const debiasedVal = metrics?.debiasedMae ? Math.round(metrics.debiasedMae).toLocaleString() : '1,286';
+  const savingsM = metrics?.potentialSavingsGbp ? (metrics.potentialSavingsGbp / 1e6).toFixed(1) : '44.2';
+  const reductionPct = (metrics?.mae && metrics?.debiasedMae)
+    ? Math.round(((metrics.mae - metrics.debiasedMae) / metrics.mae) * 100)
+    : 35;
+
+  const meanBiasFormatted = metrics?.meanError != null
+    ? `${metrics.meanError > 0 ? '+' : ''}${Math.round(metrics.meanError).toLocaleString()}`
+    : '+1,817';
+
   return (
     <section className="my-8 space-y-6 font-sans">
       
@@ -31,7 +42,7 @@ export default function OverviewExecutiveSummary({
           </h4>
           <p className="text-xs text-muted leading-relaxed font-sans">
             In {overPct}% of all settlement periods, day-ahead forecasts overpredicted physical wind output by an average of{' '}
-            <strong className="text-ink">+{Math.round(metrics?.meanError || 1817).toLocaleString()} MW</strong>. 
+            <strong className="text-ink">{meanBiasFormatted} MW</strong>. 
             Utilities bidding 100% of unadjusted forecast incurred heavy balancing mechanism shortfall penalties.
           </p>
         </div>
@@ -54,13 +65,13 @@ export default function OverviewExecutiveSummary({
         <div className="bg-white border border-rule p-5 rounded-md shadow-2xs space-y-2.5">
           <div className="flex items-center justify-between font-mono text-[11px]">
             <span className="text-ink font-bold uppercase tracking-wider">03 / Procurement Strategy</span>
-            <span className="px-1.5 py-0.5 rounded bg-paper-tint text-ink font-semibold">35% Error Cut</span>
+            <span className="px-1.5 py-0.5 rounded bg-paper-tint text-ink font-semibold">{reductionPct}% Error Cut</span>
           </div>
           <h4 className="font-serif text-lg text-ink font-normal leading-snug">
             Systematic De-Biasing Discount
           </h4>
           <p className="text-xs text-muted leading-relaxed font-sans">
-            Applying an empirical de-biasing haircut before clearing Day-Ahead contracts reduces volume error from 1,985 MW to 1,286 MW, protecting an estimated <strong className="text-forest">£44.2M</strong> in cumulative imbalance cashout exposure.
+            Applying an empirical de-biasing haircut before clearing Day-Ahead contracts reduces volume error from {maeVal} MW to {debiasedVal} MW, protecting an estimated <strong className="text-forest">£{savingsM}M</strong> in cumulative imbalance cashout exposure.
           </p>
         </div>
 

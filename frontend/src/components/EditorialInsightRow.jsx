@@ -113,9 +113,12 @@ export default function EditorialInsightRow({ metrics, viewMode = 'editorial' })
           <div className="flex flex-col lg:flex-row lg:items-baseline justify-between gap-4">
             <div className="max-w-3xl">
               <span className="font-mono text-xs text-muted uppercase tracking-wider mr-2 font-bold">Summary:</span>
-              Across January 2026, day-ahead forecasts overpredicted realised wind generation in{' '}
-              <strong className="font-medium text-copper">{overPct}% of settlement periods</strong> ({overforecastCount.toLocaleString()} intervals), with an average positive bias of{' '}
-              <strong className="font-medium text-copper">+{Math.round(meanError).toLocaleString()} MW</strong> at decision cutoff.
+              Across the evaluated delivery window, day-ahead forecasts overpredicted realised wind generation in{' '}
+              <strong className="font-medium text-copper">{overPct}% of settlement periods</strong> ({overforecastCount.toLocaleString()} intervals), with an average bias of{' '}
+              <strong className={`font-medium ${meanError >= 0 ? 'text-copper' : 'text-forest'}`}>
+                {meanError > 0 ? '+' : ''}{Math.round(meanError).toLocaleString()} MW
+              </strong>{' '}
+              at decision cutoff.
             </div>
             {isAnalysis && metrics.estimatedImbalanceExposureGbp && (
               <div className="shrink-0 flex items-center space-x-3 text-xs font-mono bg-white border border-rule px-3.5 py-2 rounded-[4px] shadow-2xs self-start lg:self-auto">

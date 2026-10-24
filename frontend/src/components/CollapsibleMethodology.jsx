@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function CollapsibleMethodology({ isOpenDefault = false, audit = {}, cutoffTime }) {
   const [open, setOpen] = useState(isOpenDefault);
+
+  useEffect(() => {
+    if (isOpenDefault) setOpen(true);
+  }, [isOpenDefault]);
 
   return (
     <section id="methodology" className="py-8 border-b border-rule font-sans">
