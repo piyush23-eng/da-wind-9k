@@ -27,7 +27,7 @@ export default function Header({
                 onClick={() => onToggleViewMode('editorial')}
                 className={`px-2 py-0.5 transition cursor-pointer ${
                   viewMode === 'editorial'
-                    ? 'bg-ink text-paper font-semibold'
+                    ? 'bg-ink text-paper font-semibold shadow-2xs'
                     : 'text-muted hover:text-ink'
                 }`}
               >
@@ -37,7 +37,7 @@ export default function Header({
                 onClick={() => onToggleViewMode('analysis')}
                 className={`px-2 py-0.5 transition cursor-pointer ${
                   viewMode === 'analysis'
-                    ? 'bg-forest-deep text-forest-bright font-semibold'
+                    ? 'bg-forest text-white font-semibold shadow-2xs'
                     : 'text-muted hover:text-ink'
                 }`}
               >

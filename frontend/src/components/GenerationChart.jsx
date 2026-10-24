@@ -40,16 +40,10 @@ const InstrumentTooltip = ({ active, payload, viewMode = 'editorial' }) => {
 
   const isOver = error !== null && error > 0;
   const isUnder = error !== null && error < 0;
-  const isDark = viewMode === 'analysis';
+  const isDark = false;
 
   return (
-    <div
-      className={`p-4 border shadow-md text-xs font-sans max-w-xs transition-opacity duration-75 ${
-        isDark
-          ? 'bg-[#142D25] border-[#2A5244] text-[#F6F5EF]'
-          : 'bg-[#FAF9F5] border-rule text-ink'
-      }`}
-    >
+    <div className="p-4 bg-white border-2 border-rule shadow-xl text-xs font-sans max-w-xs text-ink rounded-sm">
       {/* Header */}
       <div
         className={`flex items-baseline justify-between pb-2 mb-2.5 border-b font-mono ${
@@ -173,7 +167,7 @@ export default function GenerationChart({
   const [showShading, setShowShading] = useState(true);
   const [showErrorStrip, setShowErrorStrip] = useState(true);
 
-  const isDark = viewMode === 'analysis';
+  const isDark = false;
 
   // Process data for dual-tint difference area
   const processedData = useMemo(() => {
@@ -208,11 +202,7 @@ export default function GenerationChart({
   };
 
   return (
-    <div
-      className={`py-4 transition-colors duration-200 ${
-        isDark ? 'bg-forest-deep text-paper p-5 -mx-6 px-6 sm:px-10 border-b border-[#2A5244]' : ''
-      }`}
-    >
+    <div className="py-4">
       
       {/* 1. Polished Segmented Workstation Toolbar */}
       <ChartToolbar
