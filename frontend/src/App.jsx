@@ -24,6 +24,20 @@ export default function App() {
   // Workstation 4.0 States
   const [viewMode, setViewMode] = useState('editorial'); // 'editorial' | 'analysis'
   const [selectedInterval, setSelectedInterval] = useState(null);
+  const [pendingTargetTime, setPendingTargetTime] = useState(null);
+
+  // Sync selected interval when targeted event data finishes loading
+  useEffect(() => {
+    if (pendingTargetTime && generationData.length) {
+      const match = generationData.find(
+        (d) => d.startTime && d.startTime.startsWith(pendingTargetTime)
+      );
+      if (match) {
+        setSelectedInterval(match);
+        setPendingTargetTime(null);
+      }
+    }
+  }, [generationData, pendingTargetTime]);
 
   // Global Keyboard Navigation: [ESC] dismisses, [←] and [→] step intervals
   useEffect(() => {
@@ -99,36 +113,21 @@ export default function App() {
 
   // Quick jump directly to historic January 2026 market anomaly events
   const handleSelectEvent = (eventKey) => {
-    if (eventKey === 'jan12') {
-      // Jan 12 Peak Shortfall (+7,097 MW at SP 3, 01:00 UTC)
-      setStartDate('2026-01-08');
-      setEndDate('2026-01-14');
-      setTimeout(() => {
-        const item = generationData.find(
-          (d) => d.startTime && d.startTime.startsWith('2026-01-12T01:00:00')
-        );
-        if (item) setSelectedInterval(item);
-      }, 200);
-    } else if (eventKey === 'jan8') {
-      // Jan 8 Surge Spill (-3,312 MW at SP 38, 18:30 UTC)
-      setStartDate('2026-01-08');
-      setEndDate('2026-01-14');
-      setTimeout(() => {
-        const item = generationData.find(
-          (d) => d.startTime && d.startTime.startsWith('2026-01-08T18:30:00')
-        );
-        if (item) setSelectedInterval(item);
-      }, 200);
+    if (eventKey === 'jan8') {
+      // Jan 8 Peak Spill (-3,312 MW at SP 38, 18:30 UTC): Zoom to Jan 7–9
+      setStartDate('2026-01-07');
+      setEndDate('2026-01-09');
+      setPendingTargetTime('2026-01-08T18:30:00');
+    } else if (eventKey === 'jan12') {
+      // Jan 12 Peak Shortfall (+7,097 MW at SP 3, 01:00 UTC): Zoom to Jan 11–13
+      setStartDate('2026-01-11');
+      setEndDate('2026-01-13');
+      setPendingTargetTime('2026-01-12T01:00:00');
     } else if (eventKey === 'jan26') {
-      // Jan 26 Front Gap (+4,133 MW at SP 35, 17:00 UTC)
+      // Jan 26 Front Gap (+4,133 MW at SP 35, 17:00 UTC): Zoom to Jan 25–27
       setStartDate('2026-01-25');
-      setEndDate('2026-01-31');
-      setTimeout(() => {
-        const item = generationData.find(
-          (d) => d.startTime && d.startTime.startsWith('2026-01-26T17:00:00')
-        );
-        if (item) setSelectedInterval(item);
-      }, 200);
+      setEndDate('2026-01-27');
+      setPendingTargetTime('2026-01-26T17:00:00');
     }
     window.scrollTo({ top: 120, behavior: 'smooth' });
   };

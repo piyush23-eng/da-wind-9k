@@ -375,6 +375,16 @@ export default function GenerationChart({
                   connectNulls={false}
                 />
               )}
+
+              {/* Vertical Reference Marker for Selected Interval */}
+              {selectedInterval && selectedInterval.startTime && (
+                <ReferenceLine
+                  x={selectedInterval.startTime}
+                  stroke={selectedInterval.error > 0 ? '#B96848' : '#245C46'}
+                  strokeWidth={2}
+                  strokeDasharray="4 4"
+                />
+              )}
             </ComposedChart>
           </ResponsiveContainer>
         )}
@@ -466,6 +476,15 @@ export default function GenerationChart({
                   opacity={0.88}
                   isAnimationActive={false}
                 />
+
+                {/* Synchronized Vertical Marker on Error Strip */}
+                {selectedInterval && selectedInterval.startTime && (
+                  <ReferenceLine
+                    x={selectedInterval.startTime}
+                    stroke={selectedInterval.error > 0 ? '#B96848' : '#245C46'}
+                    strokeWidth={2}
+                  />
+                )}
               </ComposedChart>
             </ResponsiveContainer>
           </div>
