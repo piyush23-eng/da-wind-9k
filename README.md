@@ -6,10 +6,10 @@
 [![React](https://img.shields.io/badge/React-18.3+-61DAFB.svg)](https://react.dev)
 [![Docker](https://img.shields.io/badge/Docker-Supported-2496ED.svg)](https://www.docker.com)
 [![Tests](https://img.shields.io/badge/Tests-14%2F14%20Passing-success.svg)](https://docs.pytest.org)
-[![Video Walkthrough](https://img.shields.io/badge/Video%20Demo-YouTube-red?style=flat&logo=youtube)](https://youtu.be/leYO4V2WK1A)
+[![Video Walkthrough](https://img.shields.io/badge/Video%20Demo-YouTube-red?style=flat&logo=youtube)](https://youtu.be/0HQHt6OBR_U)
 
 > 🔗 **Live Production Application**: [https://da-wind-9k.vercel.app](https://da-wind-9k.vercel.app)  
-> 🎥 **Video Walkthrough (Client Pitch + Tech Lead Review)**: [https://youtu.be/leYO4V2WK1A](https://youtu.be/leYO4V2WK1A)  
+> 🎥 **Video Walkthrough (Client Pitch + Tech Lead Review)**: [https://youtu.be/0HQHt6OBR_U](https://youtu.be/0HQHt6OBR_U)  
 > 💻 **Public GitHub Repository**: [https://github.com/piyush23-eng/da-wind-9k](https://github.com/piyush23-eng/da-wind-9k)
 
 WindScope is a production-minded web application engineered for UK electricity utilities and wholesale energy trading desks. It quantitatively evaluates national day-ahead wind power generation forecasts against actual delivered generation to inform day-ahead power purchasing decisions in the GB wholesale electricity market.
@@ -265,7 +265,7 @@ Open `http://localhost:5173` in your browser.
 ### Live Verified URLs
 - **Production Dashboard:** [https://da-wind-9k.vercel.app](https://da-wind-9k.vercel.app)
 - **Production API Health:** [https://da-wind-9k.vercel.app/api/health](https://da-wind-9k.vercel.app/api/health)
-- **Video Walkthrough (YouTube):** [https://youtu.be/leYO4V2WK1A](https://youtu.be/leYO4V2WK1A)
+- **Video Walkthrough (YouTube):** [https://youtu.be/0HQHt6OBR_U](https://youtu.be/0HQHt6OBR_U)
 - **GitHub Repository:** [https://github.com/piyush23-eng/da-wind-9k](https://github.com/piyush23-eng/da-wind-9k)
 
 ---
