@@ -97,7 +97,7 @@ export default function CollapsibleMethodology({ isOpenDefault = false, audit = 
             </h4>
             <p className="text-muted leading-relaxed">
               Cashout exposure is calculated as <code className="font-mono text-ink">Gross Imbalance Volume (MWh) × Cashout Price</code>. 
-              Because the challenge scope is strictly limited to <code className="font-mono text-ink">FUELHH</code> and <code className="font-mono text-ink">WINDFOR</code> streams, an empirical baseline of <strong>£85/MWh</strong> (average winter UK system cashout price) is modeled. The API supports a configurable <code className="font-mono text-ink">cashout_price</code> parameter to run scenario stress tests (£50–£200/MWh).
+              Because wholesale imbalance settlement occurs on primary <code className="font-mono text-ink">FUELHH</code> and <code className="font-mono text-ink">WINDFOR</code> volumes, an empirical baseline of <strong>£85/MWh</strong> (average winter UK system cashout price) is modeled. The API supports a configurable <code className="font-mono text-ink">cashout_price</code> parameter to run scenario stress tests (£50–£200/MWh).
             </p>
           </div>
 

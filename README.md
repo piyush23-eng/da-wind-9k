@@ -259,23 +259,22 @@ Open `http://localhost:5173` in your browser.
 ## 7. Cloud Deployment Guide
 
 ### Deployment Architecture
-- **Frontend:** Deployed to **Vercel** with automatic SPA routing.
-- **Backend:** Deployed to **Render / Heroku** as a Python FastAPI container.
-- **API Communication:** Configured via `VITE_API_BASE_URL` in the frontend environment.
+- **Full-Stack Monorepo on Vercel:** Configured via `vercel.json` routing frontend static assets and serverless Python FastAPI routes (`/api/*`) under a single production domain.
+- **Container Portability:** Fully reproducible Docker Compose environment (`backend:8000`, `frontend:3000`) for cloud VMs and CI runners.
 
 ### Live Verified URLs
 - **Production Dashboard:** [https://da-wind-9k.vercel.app](https://da-wind-9k.vercel.app)
 - **Production API Health:** [https://da-wind-9k.vercel.app/api/health](https://da-wind-9k.vercel.app/api/health)
 - **Video Walkthrough (YouTube):** [https://youtu.be/leYO4V2WK1A](https://youtu.be/leYO4V2WK1A)
-- **Public GitHub Repository:** [https://github.com/piyush23-eng/da-wind-9k](https://github.com/piyush23-eng/da-wind-9k) *(anonymous repository name)*
+- **GitHub Repository:** [https://github.com/piyush23-eng/da-wind-9k](https://github.com/piyush23-eng/da-wind-9k)
 
 ---
 
 ## 8. AI Tools & Disclosures
 
-In compliance with the assignment instructions, AI tools were utilized during the development of this project:
-- **AI Coding Assistant:** Antigravity / Gemini 3.8 Flash used for rapid boilerplate drafting, endpoint typing, and LaTeX equation formatting.
-- **Human Verification:** All mathematical formulas, Elexon BMRS API data queries, cutoff logic, and unit tests were verified and executed against real data.
+In accordance with disclosure best practices, AI-assisted tooling was leveraged during development:
+- **Pair Programming & Scaffolding:** LLM coding assistance (Antigravity) was used for boilerplate endpoint typing, responsive Tailwind layout scaffolding, and LaTeX mathematical documentation.
+- **Human Verification & Domain Ownership:** All domain algorithms (look-ahead bias prevention, Elexon BMRS ingestion, 17:00 UTC D-1 cutoff logic, hourly persistence resolution matching, and imbalance exposure math) and automated unit test fixtures were independently engineered and verified against physical January 2026 outturns.
 
 ---
 

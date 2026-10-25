@@ -37,7 +37,7 @@ class ElexonClient:
     def __init__(self, use_cache: bool = True):
         self.use_cache = use_cache
         self.headers = {
-            "User-Agent": "WindScope-GridBricks/1.0",
+            "User-Agent": "WindScope-Wholesale/1.0",
             "Accept": "application/json"
         }
 
