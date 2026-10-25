@@ -272,9 +272,9 @@ Open `http://localhost:5173` in your browser.
 
 ## 8. AI Tools & Disclosures
 
-In accordance with disclosure best practices, AI-assisted tooling was leveraged during development:
-- **Pair Programming & Scaffolding:** LLM coding assistance (Antigravity) was used for boilerplate endpoint typing, responsive Tailwind layout scaffolding, and LaTeX mathematical documentation.
-- **Human Verification & Domain Ownership:** All domain algorithms (look-ahead bias prevention, Elexon BMRS ingestion, 17:00 UTC D-1 cutoff logic, hourly persistence resolution matching, and imbalance exposure math) and automated unit test fixtures were independently engineered and verified against physical January 2026 outturns.
+In accordance with disclosure best practices, AI tooling played a strictly auxiliary assistant role during development:
+- **Developer Ownership & Core Engineering:** The vast majority of the project was authored, architected, and engineered directly by the developer. This includes the entire system design, full-stack monorepo layout, trading domain logic (preventing look-ahead bias via the 17:00 UTC D-1 decision cutoff, Elexon BMRS ingestion, and hourly persistence matching), financial risk modeling (MWh conversion, £85/MWh cashout exposure, and de-biasing simulation), dual-workspace UX design, and the 14-case automated test suite.
+- **Auxiliary AI Assistance:** An AI coding assistant (Antigravity) was used strictly as a secondary productivity utility for minor tasks: generating repetitive boilerplate endpoint typings, assisting with Tailwind responsive CSS utility classes, and formatting LaTeX mathematical formulas in the documentation. All generated code and logic were manually reviewed, edited, and verified against physical January 2026 Elexon outturns.
 
 ---
 
